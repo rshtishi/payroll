@@ -20,6 +20,7 @@
 	</properties>
 
 	<modules>
+		<module>config-server</module>
 		<module>employee</module>
 	</modules>
 
