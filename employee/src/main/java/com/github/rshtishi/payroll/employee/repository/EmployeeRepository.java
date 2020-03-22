@@ -9,5 +9,7 @@ import com.github.rshtishi.payroll.employee.entity.Employee;
 
 @Repository
 public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
+
 	public List<Employee> findAll();
+
 }

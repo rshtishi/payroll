@@ -1,4 +1,4 @@
-package com.github.rshtishi.departme;
+package com.github.rshtishi.department;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

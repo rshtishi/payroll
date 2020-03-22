@@ -10,13 +10,12 @@ import com.github.rshtishi.payroll.employee.repository.EmployeeRepository;
 
 @Service
 public class EmployeeServiceImp implements EmployeeService {
-	
+
 	@Autowired
 	private EmployeeRepository employeeReposiotry;
 
 	@Override
 	public List<Employee> findAll() {
-		
 		return employeeReposiotry.findAll();
 	}
 
