@@ -11,5 +11,7 @@ import com.github.rshtishi.payroll.employee.entity.Employee;
 public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
 
 	public List<Employee> findAll();
+	
+	public long countByDepartmentId(int departmentId);
 
 }

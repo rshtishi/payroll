@@ -20,5 +20,7 @@ public class Employee {
 	private String lastname;
 	private String address;
 	private String phone;
+	private int departmentId;
+	
 
 }
