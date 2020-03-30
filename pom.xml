@@ -24,6 +24,7 @@
 	<modules>
 		<module>config-server</module>
 		<module>eureka-server</module>
+		<module>gateway-server</module>
 		<module>employee</module>
 		<module>department</module>
 	</modules>
