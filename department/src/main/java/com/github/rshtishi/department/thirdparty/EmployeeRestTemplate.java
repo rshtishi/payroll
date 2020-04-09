@@ -16,7 +16,7 @@ public class EmployeeRestTemplate {
 	
 	@HystrixCommand(fallbackMethod = "countEmployeesByDepartmentIdFallback")
 	public long countEmployeesByDepartmentId(int departmentId) {
-		ResponseEntity<Long> response = restTemplate.exchange("http://employee/employee/employees/{departmentId}/count", 
+		ResponseEntity<Long> response = restTemplate.exchange("http://employee/employees/{departmentId}/count", 
 				HttpMethod.GET, null, Long.class, departmentId);
 		return response.getBody();
 	}
