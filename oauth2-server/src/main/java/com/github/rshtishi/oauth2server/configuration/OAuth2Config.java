@@ -1,6 +1,7 @@
 package com.github.rshtishi.oauth2server.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,14 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	OAuth2ConfigParameters oauth2ConfigParameters;
 
+	@Bean
+	public OAuth2ConfigParameters oAuth2ConfigParameters() {
+		return new OAuth2ConfigParameters();
+	}
+	
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints
@@ -29,8 +37,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-		.withClient("payroll")
-		.secret(passwordEncoder.encode("test"))
+		.withClient(oauth2ConfigParameters.getClient().getId())
+		.secret(passwordEncoder.encode(oauth2ConfigParameters.getClient().getSecret()))
 		.authorizedGrantTypes( "refresh_token","password","client_credentials")
         .scopes("webclient","mobileclient");
 	}

@@ -1,0 +1,37 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="01" author="rshtishi">
+
+		<createTable tableName="users">
+			<column name="username" type="varchar(50)">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="password" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="enabled" type="tinyint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="authorities">
+			<column name="username" type="varchar(50)">
+				<constraints nullable="false" foreignKeyName="users"
+					references="users(username)" />
+			</column>
+			<column name="authority" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex indexName="ix_auth_username"
+			tableName="authorities" unique="true">
+			<column name="username" />
+			<column name="authority" />
+		</createIndex>
+
+	</changeSet>
+</databaseChangeLog>
