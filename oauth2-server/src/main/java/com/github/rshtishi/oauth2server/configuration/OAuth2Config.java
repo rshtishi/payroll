@@ -42,8 +42,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer, jwtAccessTokenConverter));
 		defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
-		endpoints.tokenStore(tokenStore).tokenEnhancer(tokenEnhancerChain)
-				// .accessTokenConverter(jwtAccessTokenConverter)
+		endpoints.tokenStore(tokenStore).accessTokenConverter(jwtAccessTokenConverter).tokenEnhancer(tokenEnhancerChain)
 				.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
 	}
 
