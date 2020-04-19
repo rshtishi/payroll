@@ -12,7 +12,7 @@ import com.github.rshtishi.department.service.DepartmentService;
 
 @RestController
 @RequestMapping("/departments")
-public class DepartmentRestConroller {
+public class DepartmentRestController {
 
 	@Autowired
 	private DepartmentService departmentService;

@@ -9,7 +9,7 @@ import lombok.Setter;
 @ConfigurationProperties(prefix="security",ignoreUnknownFields = true)
 @Getter
 @Setter
-public class OAuth2ConfigProperties {
+public class SecurityProperties {
 	
 	private Jwt jwt;
 	

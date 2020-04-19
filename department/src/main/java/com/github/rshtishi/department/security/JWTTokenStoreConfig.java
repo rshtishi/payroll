@@ -1,4 +1,4 @@
-package com.github.rshtishi.payroll.employee.security;
+package com.github.rshtishi.department.security;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,9 +12,10 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+
 @Configuration
 public class JWTTokenStoreConfig {
-
+	
 	@Autowired
 	private SecurityProperties securityProperties;
 
@@ -22,7 +23,7 @@ public class JWTTokenStoreConfig {
 	public SecurityProperties securityProperties() {
 		return new SecurityProperties();
 	}
-
+	
 	private String getPublicKeyAsString() {
 		try {
 			return IOUtils.toString(securityProperties.getJwt().getPublicKey().getInputStream(),
@@ -31,7 +32,7 @@ public class JWTTokenStoreConfig {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	@Bean
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
 		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
