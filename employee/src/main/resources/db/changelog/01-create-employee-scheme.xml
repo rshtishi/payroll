@@ -6,7 +6,7 @@
 	<changeSet id="01" author="rshtishi">
 
 		<createTable tableName="employee">
-			<column name="id" type="int">
+			<column name="id" autoIncrement="true" type="int">
 				<constraints nullable="false" primaryKey="true" />
 			</column>
 			<column name="firstname" type="varchar(25)">
@@ -22,6 +22,6 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-
+            
 	</changeSet>
 </databaseChangeLog>

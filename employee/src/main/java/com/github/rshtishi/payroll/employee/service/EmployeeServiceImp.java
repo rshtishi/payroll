@@ -24,4 +24,9 @@ public class EmployeeServiceImp implements EmployeeService {
 		return employeeRepository.countByDepartmentId(departmentId);
 	}
 
+	@Override
+	public void createEmployee(Employee employee) {
+		employeeRepository.save(employee);
+	}
+
 }

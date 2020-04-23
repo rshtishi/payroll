@@ -9,5 +9,7 @@ public interface EmployeeService {
 	public List<Employee> findAll();
 	
 	public long countByDepartmentId(int departmentId);
+	
+	public void createEmployee(Employee employee);
 
 }
