@@ -8,8 +8,8 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import com.github.rshtishi.department.entity.UserContext;
-import com.github.rshtishi.department.entity.UserContextHolder;
+import com.github.rshtishi.department.UserContext;
+import com.github.rshtishi.department.UserContextHolder;
 
 public class UserContextInterceptor implements ClientHttpRequestInterceptor {
 

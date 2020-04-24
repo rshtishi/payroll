@@ -2,8 +2,8 @@ package com.github.rshtishi.department.hystrix;
 
 import java.util.concurrent.Callable;
 
-import com.github.rshtishi.department.entity.UserContext;
-import com.github.rshtishi.department.entity.UserContextHolder;
+import com.github.rshtishi.department.UserContext;
+import com.github.rshtishi.department.UserContextHolder;
 
 public class DelegatingUserContextCallable<V> implements Callable<V> {
 

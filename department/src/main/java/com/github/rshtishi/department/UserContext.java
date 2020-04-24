@@ -1,4 +1,4 @@
-package com.github.rshtishi.department.entity;
+package com.github.rshtishi.department;
 
 import lombok.Getter;
 import lombok.Setter;

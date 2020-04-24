@@ -1,12 +1,14 @@
 package com.github.rshtishi.department.thirdparty;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.github.rshtishi.department.repository.EmployeeCountRedisRepository;
+import com.github.rshtishi.department.entity.EmployeeCountChangeModel;
 import com.github.rshtishi.department.service.EmployeeCountRedisService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
@@ -36,6 +38,11 @@ public class EmployeeRestTemplate {
 	
 	public long countEmployeesByDepartmentIdFallback(int departmentId) {
 		return -1;
+	}
+	
+	@StreamListener(Sink.INPUT)
+	public void loggerSink(EmployeeCountChangeModel change) {
+		employeeCountRedisService.saveEmployeeCountInCache(change.getDepartmentId(), change.getEmployeeCount());
 	}
 
 }

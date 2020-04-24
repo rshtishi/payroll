@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
-import com.github.rshtishi.department.entity.UserContext;
-import com.github.rshtishi.department.entity.UserContextHolder;
+import com.github.rshtishi.department.UserContext;
+import com.github.rshtishi.department.UserContextHolder;
 
 @Component
 public class UserContextFilter implements Filter {
