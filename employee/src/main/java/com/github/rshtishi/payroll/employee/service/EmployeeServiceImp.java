@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.rshtishi.payroll.employee.entity.Employee;
+import com.github.rshtishi.payroll.employee.entity.EmployeeActionEnum;
 import com.github.rshtishi.payroll.employee.repository.EmployeeRepository;
 import com.github.rshtishi.payroll.employee.source.EmployeeSource;
 
@@ -30,8 +31,19 @@ public class EmployeeServiceImp implements EmployeeService {
 	@Override
 	public void createEmployee(Employee employee) {
 		employeeRepository.save(employee);
-		long employeeCount = employeeRepository.countByDepartmentId(employee.getDepartmentId());
-		employeeSource.publishEmployeeCountChange(employee.getDepartmentId(), employeeCount);
+		employeeSource.publishEmployeeCountChange(employee.getDepartmentId(), EmployeeActionEnum.CREATE.action());
+	}
+
+	@Override
+	public void updateEmployee(Employee employee) {
+		employeeRepository.save(employee);
+	}
+
+	@Override
+	public void deleteEmployee(int employeeId) {
+		Employee employee = employeeRepository.findById(employeeId).get();
+		employeeRepository.deleteById(employeeId);
+		employeeSource.publishEmployeeCountChange(employee.getDepartmentId(), EmployeeActionEnum.DELETE.action());
 	}
 
 }

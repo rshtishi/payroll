@@ -13,8 +13,8 @@ public class EmployeeSource {
 	@Autowired
 	private Source source;
 
-	public void publishEmployeeCountChange(int departmentId, long employeeCount) {
-		EmployeeCountChangeModel change = new EmployeeCountChangeModel(departmentId, employeeCount,
+	public void publishEmployeeCountChange(int departmentId, String action) {
+		EmployeeCountChangeModel change = new EmployeeCountChangeModel(departmentId, action,
 				EmployeeCountChangeModel.class.getTypeName());
 		source.output().send(MessageBuilder.withPayload(change).build());
 	}

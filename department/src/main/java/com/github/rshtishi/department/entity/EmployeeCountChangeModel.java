@@ -8,7 +8,7 @@ import lombok.Data;
 public class EmployeeCountChangeModel {
 	
 	private int departmentId;
-	private long employeeCount;
+	private String action;
 	private String typeName;
 
 }

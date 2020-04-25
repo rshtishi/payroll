@@ -39,10 +39,5 @@ public class EmployeeRestTemplate {
 	public long countEmployeesByDepartmentIdFallback(int departmentId) {
 		return -1;
 	}
-	
-	@StreamListener(Sink.INPUT)
-	public void loggerSink(EmployeeCountChangeModel change) {
-		employeeCountRedisService.saveEmployeeCountInCache(change.getDepartmentId(), change.getEmployeeCount());
-	}
 
 }

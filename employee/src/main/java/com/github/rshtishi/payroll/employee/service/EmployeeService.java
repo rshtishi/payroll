@@ -11,5 +11,9 @@ public interface EmployeeService {
 	public long countByDepartmentId(int departmentId);
 	
 	public void createEmployee(Employee employee);
+	
+	public void updateEmployee(Employee employee);
+	
+	public void deleteEmployee(int employeeId);
 
 }
