@@ -3,6 +3,8 @@ package com.github.rshtishi.department;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -21,6 +23,8 @@ import com.github.rshtishi.department.interceptor.UserContextInterceptor;
 @EnableResourceServer
 @EnableBinding(Sink.class)
 public class DepartmentApplication {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentApplication.class);
 	
 	@LoadBalanced
 	@Bean
@@ -38,5 +42,6 @@ public class DepartmentApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DepartmentApplication.class, args);
+		LOGGER.info("Department Application Started");
 	}
 }
