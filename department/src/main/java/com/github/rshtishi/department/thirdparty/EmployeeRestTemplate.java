@@ -26,15 +26,13 @@ public class EmployeeRestTemplate {
 	@HystrixCommand(fallbackMethod = "countEmployeesByDepartmentIdFallback")
 	public long countEmployeesByDepartmentId(int departmentId) {
 		LOGGER.info("Called countEmployeesByDepartmentId, departmentId: "+departmentId);
-		long employeeCount = employeeCountRedisService.findEmployeeCountFromCache(departmentId);
-		LOGGER.info("employeeCount returned from Redis Cache: "+employeeCount);
+		long employeeCount = -1; //employeeCountRedisService.findEmployeeCountFromCache(departmentId);
 		if(employeeCount>-1) {
 			return employeeCount;
 		}
 		ResponseEntity<Long> response = restTemplate.exchange("http://employee/employees/{departmentId}/count", 
 				HttpMethod.GET, null, Long.class, departmentId);
 		employeeCount = response.getBody();
-		LOGGER.info("employeeCount returned from employee service: "+employeeCount);
 		if(employeeCount>-1) {
 			employeeCountRedisService.saveEmployeeCountInCache(departmentId, employeeCount);
 		}
