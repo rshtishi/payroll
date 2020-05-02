@@ -8,6 +8,8 @@ public interface EmployeeService {
 
 	public List<Employee> findAll();
 	
+	public Employee findById(int id);
+	
 	public long countByDepartmentId(int departmentId);
 	
 	public void createEmployee(Employee employee);

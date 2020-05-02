@@ -26,24 +26,29 @@ public class EmployeeRestController {
 	public List<Employee> findAll() {
 		return employeeService.findAll();
 	}
-	
+
+	@GetMapping("/{id}")
+	public Employee findById(@PathVariable int id) {
+		return employeeService.findById(id);
+	}
+
 	@GetMapping("/{departmentId}/count")
 	public long countByDeparmentId(@PathVariable int departmentId) {
 		return employeeService.countByDepartmentId(departmentId);
 	}
-	
+
 	@PostMapping
-	public void createEmployee(@RequestBody Employee employee) {
+	public void create(@RequestBody Employee employee) {
 		employeeService.createEmployee(employee);
 	}
-	
+
 	@PutMapping
-	public void updateEmployee(@RequestBody Employee employee) {
+	public void update(@RequestBody Employee employee) {
 		employeeService.updateEmployee(employee);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public void deleteEmployee(@PathVariable int id) {
+	public void delete(@PathVariable int id) {
 		employeeService.deleteEmployee(id);
 	}
 
