@@ -9,8 +9,8 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>gateway-server</artifactId>
- 	<packaging>jar</packaging>
- 	
+	<packaging>jar</packaging>
+
 	<dependencies>
 
 		<dependency>
@@ -43,6 +43,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 
 	</dependencies>
