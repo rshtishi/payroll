@@ -8,7 +8,9 @@ import lombok.Setter;
 public class UserContext {
 
 	public static final String AUTHORIZATION = "Authorization";
+	public static final String TRACE_ID = "trace-id";
 
 	private String authorization = new String();
+	private String traceId = new String();
 
 }

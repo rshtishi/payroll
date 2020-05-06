@@ -22,6 +22,7 @@ public class UserContextFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		UserContextHolder.getContext().setAuthorization(httpServletRequest.getHeader(UserContext.AUTHORIZATION));
+		UserContextHolder.getContext().setTraceId(httpServletRequest.getHeader(UserContext.TRACE_ID));
 		chain.doFilter(httpServletRequest, response);
 	}
 
