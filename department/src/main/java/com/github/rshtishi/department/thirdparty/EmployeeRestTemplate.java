@@ -26,7 +26,7 @@ public class EmployeeRestTemplate {
 	@HystrixCommand(fallbackMethod = "countEmployeesByDepartmentIdFallback")
 	public long countEmployeesByDepartmentId(int departmentId) {
 		LOGGER.info("Called countEmployeesByDepartmentId, departmentId: "+departmentId);
-		long employeeCount = -1; //employeeCountRedisService.findEmployeeCountFromCache(departmentId);
+		long employeeCount = employeeCountRedisService.findEmployeeCountFromCache(departmentId);
 		if(employeeCount>-1) {
 			return employeeCount;
 		}
