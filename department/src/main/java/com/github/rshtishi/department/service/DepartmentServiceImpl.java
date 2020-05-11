@@ -40,7 +40,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public Department findById(int id) {
 		LOGGER.info("findById called, id: "+id);
-		return departmentRepository.findById(id).get();
+		Department department = departmentRepository.findById(id).get();
+		int employeesNo = (int) employeeRestTemplate.countEmployeesByDepartmentId(department.getId());
+		department.setNoOfEmployees(employeesNo);
+		return department;
 	}
 	
 	@Override
