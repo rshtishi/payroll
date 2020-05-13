@@ -1,4 +1,4 @@
-package com.github.rshtishi.department.entity;
+package com.github.rshtishi.department.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -12,6 +12,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.client.RestTemplate;

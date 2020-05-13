@@ -9,9 +9,9 @@ public interface DepartmentService {
 	
 	public Department findById(int id);
 	
-	public void createEmployee(Department department);
+	public Department createEmployee(Department department);
 	
-	public void updateEmployee(Department department);
+	public Department updateEmployee(Department department);
 	
 	public void deleteEmployee(int id);
 

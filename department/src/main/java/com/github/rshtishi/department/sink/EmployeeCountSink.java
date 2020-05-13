@@ -5,8 +5,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.stereotype.Component;
 
-import com.github.rshtishi.department.entity.EmployeeActionEnum;
-import com.github.rshtishi.department.entity.EmployeeCountChangeModel;
+import com.github.rshtishi.department.dto.EmployeeCountChangeModel;
+import com.github.rshtishi.department.entity.enums.EmployeeActionEnum;
 import com.github.rshtishi.department.service.EmployeeCountRedisService;
 
 @Component

@@ -1,6 +1,7 @@
 package com.github.rshtishi.department.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -41,21 +42,20 @@ public class DepartmentServiceImpl implements DepartmentService {
 	public Department findById(int id) {
 		LOGGER.info("findById called, id: "+id);
 		Department department = departmentRepository.findById(id).get();
-		int employeesNo = (int) employeeRestTemplate.countEmployeesByDepartmentId(department.getId());
-		department.setNoOfEmployees(employeesNo);
+		department = addNoEmployee(department);
 		return department;
 	}
 	
 	@Override
-	public void createEmployee(Department department) {
+	public Department createEmployee(Department department) {
 		LOGGER.info("createEmployee method called, department: "+department);
-		departmentRepository.save(department);
+		return departmentRepository.save(department);
 	}
 	
 	@Override
-	public void updateEmployee(Department department) {
+	public Department updateEmployee(Department department) {
 		LOGGER.info("updateEmployee method called, department: "+department);
-		departmentRepository.save(department);
+		return departmentRepository.save(department);
 	}
 	
 	@Override

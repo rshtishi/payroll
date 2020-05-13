@@ -1,4 +1,4 @@
-package com.github.rshtishi.department.entity;
+package com.github.rshtishi.department.entity.enums;
 
 public enum EmployeeActionEnum {
 	
