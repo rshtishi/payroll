@@ -32,7 +32,7 @@ public class DepartmentRestController {
 
 	protected Department verifyDeparmentExistence(int id) {
 		Department department = departmentService.findById(id);
-		if (department != null) {
+		if (department == null) {
 			throw new ResourceNotFoundException("Department with id: " + id + " not found.");
 		}
 		return department;

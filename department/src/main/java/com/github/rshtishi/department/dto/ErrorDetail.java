@@ -13,7 +13,6 @@ public class ErrorDetail {
 	private int status;
 	private String detail;
 	private long timeStamp;
-	private String path;
 	private String developerMessage;
 	private Map<String, List<ValidationError>> errors = new HashMap<>();
 }

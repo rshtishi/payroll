@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.rshtishi.department.entity.Department;
+import com.github.rshtishi.department.helper.Translator;
 import com.github.rshtishi.department.repository.DepartmentRepository;
 import com.github.rshtishi.department.thirdparty.EmployeeRestTemplate;
 
@@ -22,6 +23,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	private DepartmentRepository departmentRepository;
 	@Autowired
 	private EmployeeRestTemplate employeeRestTemplate;
+
 
 	@Override
 	public List<Department> findAll() {
@@ -41,8 +43,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public Department findById(int id) {
 		LOGGER.info("findById called, id: "+id);
-		Department department = departmentRepository.findById(id).get();
-		department = addNoEmployee(department);
+		Department  department = null;
+		Optional<Department> optionalDepartment = departmentRepository.findById(id);
+		if(optionalDepartment.isPresent()) {
+			department = optionalDepartment.get();
+			department = addNoEmployee(department);
+		}
 		return department;
 	}
 	
