@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.github.rshtishi.department.entity.Department;
 import com.github.rshtishi.department.exception.ResourceNotFoundException;
 import com.github.rshtishi.department.service.DepartmentService;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/departments")
+@Api(value = "departments", description = "Department API")
 public class DepartmentRestController {
 
 	@Autowired
@@ -39,18 +44,21 @@ public class DepartmentRestController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Department>> findAll() {
-		List<Department> departmentList = departmentService.findAll();
-		return new ResponseEntity<>(departmentList, HttpStatus.OK);
+	@ApiOperation(value = "Retrieves all departments", response = Department.class, responseContainer = "List")
+	public ResponseEntity<Page<Department>> findAll(Pageable pageable) {
+		Page<Department> departments = departmentService.findAll(pageable);
+		return new ResponseEntity<>(departments, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
+	@ApiOperation(value = "Retrieves a Deparment associated with deparmentId", response = Department.class)
 	public ResponseEntity<Department> findById(@PathVariable int id) {
 		Department department = verifyDeparmentExistence(id);
 		return new ResponseEntity<>(department, HttpStatus.OK);
 	}
 
 	@PostMapping
+	@ApiOperation(value = "Create a new Department", response = Department.class, notes = "The newly created department id will be sent in the location response header")
 	public ResponseEntity<Department> create(@Valid @RequestBody Department department) {
 		department = departmentService.createEmployee(department);
 		HttpHeaders responseHttpHeaders = new HttpHeaders();
@@ -61,6 +69,7 @@ public class DepartmentRestController {
 	}
 
 	@PutMapping
+	@ApiOperation(value = "Modifies department associated with departmentId", response = Department.class)
 	public ResponseEntity<Department> update(@Valid @RequestBody Department department) {
 		verifyDeparmentExistence(department.getId());
 		department = departmentService.updateEmployee(department);
@@ -68,6 +77,7 @@ public class DepartmentRestController {
 	}
 
 	@DeleteMapping("/{id}")
+	@ApiOperation(value = "Deletes department associated with departmentId")
 	public ResponseEntity<?> delete(@PathVariable Integer id) {
 		verifyDeparmentExistence(id);
 		departmentService.deleteEmployee(id);

@@ -1,11 +1,13 @@
 package com.github.rshtishi.department.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.github.rshtishi.department.entity.Department;
 
 public interface DepartmentService {
 
-	public List<Department> findAll();
+	public Page<Department> findAll(Pageable pageable);
 	
 	public Department findById(int id);
 	

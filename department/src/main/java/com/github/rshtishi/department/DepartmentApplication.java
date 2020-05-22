@@ -18,8 +18,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.web.client.RestTemplate;
 
 import com.github.rshtishi.department.interceptor.UserContextInterceptor;
+import com.mangofactory.swagger.plugin.EnableSwagger;
 
 @SpringBootApplication
+@EnableSwagger
 @EnableCircuitBreaker
 @EnableResourceServer
 @EnableBinding(Sink.class)

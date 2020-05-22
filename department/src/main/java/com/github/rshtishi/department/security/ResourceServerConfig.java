@@ -10,15 +10,16 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @Configuration
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
-	
+
 	@Autowired
 	private TokenStore tokenStore;
 	@Autowired
 	private DefaultTokenServices defaultTokenServices;
-	
+
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().anyRequest().authenticated();
+		httpSecurity.authorizeRequests().antMatchers("/static/**", "/v2/api-docs", "/configuration/**", "/swagger*/**",
+				"/webjars/**", "/api-docs/**").permitAll().anyRequest().authenticated();
 	}
 
 	@Override
