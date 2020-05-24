@@ -1,7 +1,9 @@
 package com.github.rshtishi.department.controller;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.github.rshtishi.department.DepartmentApplication;
 import com.github.rshtishi.department.entity.Department;
+import com.github.rshtishi.department.helper.DepartmentHelper;
 import com.github.rshtishi.department.service.DepartmentService;
 
 @ExtendWith(SpringExtension.class)
@@ -41,6 +44,8 @@ public class DepartmentRestControllerUnitTest {
 	private DepartmentRestController departmentRestController;
 	@Mock
 	private DepartmentService departmentService;
+	@Mock
+	private DepartmentHelper departmentHelper;
 
 	private MockMvc mockMvc;
 
@@ -63,5 +68,21 @@ public class DepartmentRestControllerUnitTest {
 		result.andExpect(status().isOk());
 		result.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("$.content").isArray());
+	}
+
+	@Test
+	public void testFindById() throws Exception {
+		// setup
+		Department department = new Department();
+		department.setId(1);
+		department.setName("Finance");
+		when(departmentHelper.verifyDeparmentExistence(Mockito.any(), Mockito.anyInt())).thenReturn(department);
+		// execute
+		ResultActions result = mockMvc.perform(get("/departments/1"));
+		// verify
+		result.andExpect(status().isOk());
+		result.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+		result.andExpect(jsonPath("$.id", is(1)));
+		result.andExpect(jsonPath("$.name", is("Finance")));
 	}
 }
