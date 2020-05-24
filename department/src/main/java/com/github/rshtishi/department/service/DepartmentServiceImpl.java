@@ -27,7 +27,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 	public Page<Department> findAll(Pageable pageable) {
 		LOGGER.info("findAll method called");
 		Page<Department> departmentPage = departmentRepository.findAll(pageable);
-		departmentPage.getContent().stream().map(department -> addNoEmployee(department));
+		departmentPage.getContent().stream().map(department -> addNoEmployee(department)).forEach(deparment -> LOGGER
+				.info("Department Name:" + deparment.getName() + ", employee No:" + deparment.getNoOfEmployees()));
 		return departmentPage;
 	}
 
