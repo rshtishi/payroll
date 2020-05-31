@@ -44,7 +44,7 @@ import com.github.rshtishi.department.service.DepartmentService;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DepartmentApplication.class)
 @ContextConfiguration(classes = MockServletContext.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:test.properties")
 @WebAppConfiguration
 public class DepartmentRestControllerUnitTest {
 
