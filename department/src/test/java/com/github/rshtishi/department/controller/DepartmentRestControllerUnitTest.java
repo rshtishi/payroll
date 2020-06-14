@@ -42,10 +42,8 @@ import com.github.rshtishi.department.helper.DepartmentHelper;
 import com.github.rshtishi.department.service.DepartmentService;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = DepartmentApplication.class)
-@ContextConfiguration(classes = MockServletContext.class)
+@SpringBootTest
 @TestPropertySource(locations = "classpath:test.properties")
-@WebAppConfiguration
 public class DepartmentRestControllerUnitTest {
 
 	@InjectMocks
