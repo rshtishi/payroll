@@ -53,4 +53,24 @@ The OAuth2 server allows the user to authenticate themselves without having to p
 
 ### Employee Service
 
+Employee Service implements the business logic for managing employees. Environment configuration properties are separated from the service code and runtime code through the use configuration server. Whenever a new instance of the employee service is started it automatically register itself in Eureka Server. Thus making the service discoverable by other application clients. Employee Service is protected resource, a user needs to include in authentication HTTP header containing OAUTH2 access token in order to access the service.  To enable distributed tracing we have used spring cloud sleuth to link together transaction across multiple services. ELK(Elasticsearch Logstash Kibana) is used to aggregate logs from multiple services into a single searchable source. We have used zipkin to understand the flow of transaction. We have used Zipkin for visualization of the flow of a transaction across multiple services.
+
 ### Department Service
+
+Department Service implements the business logic for managing the departments. It implements the same technology as the employee service for separation of configuration from service code, service discovery, security and distributed tracing. Department Service makes calls to employee service to retrieve number of employee for each department. We have used client resiliency software patterns (circuit breakers, fallbacks and bulkheads) on protecting department service from crashing because the employee service is throwing error or behaving poorly. We have used Redis cache to cache the value of employee number returned from employee service. Also we have implemented event driven architecture with kafka. Everytime a new employee is created in employee service it publish a message to the queue. Department service monitors the queue for any messages published and updates the cache for each message published from employee service.
+
+## Setup
+
+Prerequisite needed before setup:
+
+- Elasticsearch [version: 7.6.2]
+- Logstash [version: 7.6.2]
+- Kibana [version: 7.6.2]
+- Redis [version: 2.4.5]
+- Kafka [version:]
+- Zipkin Server [version: 2.21.1]
+
+
+
+
+
