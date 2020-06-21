@@ -64,7 +64,8 @@ public class DepartmentRestController {
 	@PutMapping("/{id}")
 	@ApiOperation(value = "Modifies department associated with departmentId", response = Department.class)
 	public ResponseEntity<Department> update(@Valid @RequestBody Department department, @PathVariable int id) {
-		departmentHelper.verifyDeparmentExistence(departmentService, department.getId());
+		departmentHelper.verifyDeparmentExistence(departmentService, id);
+		department.setId(id);
 		department = departmentService.updateEmployee(department);
 		return new ResponseEntity<>(department, HttpStatus.OK);
 	}

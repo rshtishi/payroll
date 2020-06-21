@@ -1,10 +1,10 @@
 package com.github.rshtishi.payroll.employee.service;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.rshtishi.payroll.employee.entity.Employee;
@@ -14,7 +14,7 @@ import com.github.rshtishi.payroll.employee.source.EmployeeSource;
 
 @Service
 public class EmployeeServiceImp implements EmployeeService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImp.class);
 
 	@Autowired
@@ -23,39 +23,42 @@ public class EmployeeServiceImp implements EmployeeService {
 	private EmployeeSource employeeSource;
 
 	@Override
-	public List<Employee> findAll() {
+	public Page<Employee> findAll(Pageable pageable) {
 		LOGGER.info("findAll called");
-		return employeeRepository.findAll();
+		return employeeRepository.findAll(pageable);
 	}
-	
+
 	@Override
 	public Employee findById(int id) {
-		LOGGER.info("findById called, id: "+id);
+		LOGGER.info("findById called, id: " + id);
 		return employeeRepository.findById(id).get();
 	}
 
 	@Override
 	public long countByDepartmentId(int departmentId) {
-		LOGGER.info("countByDepartmentId called, departmentId: "+departmentId);
+		LOGGER.info("countByDepartmentId called, departmentId: " + departmentId);
 		return employeeRepository.countByDepartmentId(departmentId);
 	}
 
 	@Override
-	public void createEmployee(Employee employee) {
-		LOGGER.info("createEmployee called, employee: "+employee);
-		employeeRepository.save(employee);
+	public Employee createEmployee(Employee employee) {
+		LOGGER.info("createEmployee called, employee: " + employee);
+		employee = employeeRepository.save(employee);
 		employeeSource.publishEmployeeCountChange(employee.getDepartmentId(), EmployeeActionEnum.CREATE.action());
+		return employee;
+
 	}
 
 	@Override
-	public void updateEmployee(Employee employee) {
-		LOGGER.info("updateEmployee, employee: "+employee);
-		employeeRepository.save(employee);
+	public Employee updateEmployee(Employee employee) {
+		LOGGER.info("updateEmployee, employee: " + employee);
+		employee = employeeRepository.save(employee);
+		return employee;
 	}
 
 	@Override
 	public void deleteEmployee(int employeeId) {
-		LOGGER.info("deleteEmployee, employeeId: "+employeeId);
+		LOGGER.info("deleteEmployee, employeeId: " + employeeId);
 		Employee employee = employeeRepository.findById(employeeId).get();
 		employeeRepository.deleteById(employeeId);
 		employeeSource.publishEmployeeCountChange(employee.getDepartmentId(), EmployeeActionEnum.DELETE.action());
