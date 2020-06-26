@@ -20,6 +20,10 @@ platform we should focus on that service to be reliable, redundant, and resilien
 
 ## Architecture
 
+The service discovery conceptual architecture is like below:
+
+![Eureka Server Architecture Image](https://github.com/rshtishi/payroll/blob/master/eureka-server/src/main/resources/static/images/eureka-server-architecture.png)
+
 ## Implementation Details
 
 ## Setup
