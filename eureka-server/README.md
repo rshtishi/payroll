@@ -17,6 +17,14 @@ platform we should focus on that service to be reliable, redundant, and resilien
 
 ## Technology
 
+*Eureka Server* is using the following technologies:
+
+- Java [version: 11] (the language used to write the application)
+- Maven [version: 3.6] (the tool for managing dependencies and building the project)
+- Spring-Boot [version: 2.2.5.RELEASE] (the framework for creating spring application that just runs)
+- Spring-Cloud [version: Hoxton.SR3] (the framework for building some of the common patterns in distributed systems)
+- Spring-Cloud-Config-Client [version: 2.2.2.RELEASE] (the dependency for binding the client to the Configuration Server Service)
+- Spring-Cloud-Netflix [version: 2.2.2.RELEASE] (the framework that provides the common pattern for building large distributed systems)
 
 ## Architecture
 
