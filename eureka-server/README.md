@@ -34,5 +34,45 @@ The service discovery conceptual architecture is like below:
 
 ## Implementation Details
 
+The configuration information for Eureka Service is located outside the service code. Below is the dependency needed to communicate with *configuration server* for retrieving eureka configuration information:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-client</artifactId>
+		</dependency>
+```
+
+After the Maven dependencies have been defined, you need to tell the eureka service where to contact the *configuration server*. We have configured the application name for the service, the application profile, and the URI to connect to a configuration server in the ```bootstrap.properties``` file. Below it is the configuration information:
+
+```
+spring.application.name=eureka
+spring.profiles.active=default
+cloud.config.uri=http://localhost:8888
+```
+
+Setting up the *eureka server* service starts by adding the following dependency:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+```
+
+After that we configure the eureka configuration information. This configuration information is added in ```application.properties``` file located in the central repository. 
+Below is the configuration information:
+
+```
+server.port=8761
+
+#Eureka Server Configuration
+eureka.client.registerWithEureka=false
+eureka.client.fetchRegistry=false
+eureka.client.waitTimeInMsWhenSyncEmpty=5
+```
+
+The ```eureka.client.registerWithEureka``` attribute tells the service not to register with a *eureka server* service when the Spring Boot *eureka server*  application starts because this is the *eureka server* service. The ```eureka.client.fetchRegistry``` attribute is set to false so that when the *eureka server* service starts, it doesn’t try to cache its registry information locally. 
+
 ## Setup
 
