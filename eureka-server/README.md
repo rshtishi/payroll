@@ -111,7 +111,7 @@ To see the information for all services, hit the following GET endpoint:
 
 To access particular service information, use the convetion below:
 
-- http://<eureka service>:8761/eureka/apps/<APPID>
+- http://localhost:8761/eureka/apps/{APPID}
 	
 APPID is application name of the service that we want to retrieve information.
 
