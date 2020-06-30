@@ -105,7 +105,7 @@ Execute the commands:
 - ```mvn clean install``` (to build the project)
 - ```mvn spring-boot:run``` (to run the project)
 
-To see the information for all services, hit the following GET endpoint:
+To see the information for all services, acess the following GET endpoint:
 
 - http://localhost:8761/eureka/apps
 
@@ -113,9 +113,10 @@ To access particular service information, use the convetion below:
 
 - http://localhost:8761/eureka/apps/{APPID}
 	
-APPID is application name of the service that we want to retrieve information.
+*APPID* is application name of the service that we want to retrieve service information.
 
 Examples:
 
-- http://localhost:8761/eureka/apps/department [Http method: GET] (we retrieve the location information about deparment service)
+- http://localhost:8761/eureka/apps/department [Http method: GET] (we retrieve the location information and the number of instances for the deparment service)
+- http://localhost:8761/eureka/apps/employee [Http method: GET] (we retrieve the location information and the number of instances for the employee service)
 
