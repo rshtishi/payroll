@@ -1,11 +1,10 @@
 # payroll
 
-Payroll is application that is being build using the micro-service architecture.
+*payroll* is an application that manages employees built with microservice architecture.
 
 ## Business Case
 
-A company needs web application for managing employees and the deparments in which they are organized. The application must be 
-horizontally scalable.
+A company needs web application for managing employees and the departments in which they are organized. The application must be are geared toward reusability and needs to be highly resilient and scalable. 
 
 ## Technology
 
@@ -40,7 +39,9 @@ In microservice architecture our business logic is separated in small services. 
 
 ### Eureka Server
 
-Microservices architecture is made of smaller services deployed in different machines. Therefore, we need to find the physical address of where the machine is located. We use Eureka Server for discovering the ip address of the service that we need to call. Every instance of service that start, will register their ip in Eureka. Netflix Ribbon library to provide client-slide load balancing. Ribbon will contact the Eureka service to retrieve service location information and then cache it locally. Periodically, the Netflix Ribbon library will ping the Eureka service and refresh its local cache of service locations. When service will call another service it will use the Netflix Ribbon to retrieve the service location of the service that will be called.
+Microservices architecture is made of smaller independent services deployed in different machines. *Eureka Server*  is used from services consumers for discovering the IP address of the service. Every instance of service that starts, will register their IP in *Eureka Server*. Netflix Ribbon library provides client-slide load balancing. Periodically, the Netflix Ribbon library will ping the Eureka service and refresh its local cache of service locations. When service will call another service it will use the Netflix Ribbon to retrieve the service location of the service that will be called. In the link below you can find more detail:
+
+[Eureka Server Service](https://github.com/rshtishi/payroll/blob/master/eureka-server/README.md)
 
 ### Gateway Server
 
