@@ -34,7 +34,7 @@ The service discovery conceptual architecture is like below:
 
 ## Implementation Details
 
-The configuration information for Eureka Service is located outside the service code. Below is the dependency needed to communicate with *configuration server* for retrieving eureka configuration information:
+The configuration information for *Eureka Server* is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* for retrieving *eureka server* configuration information:
 
 ```
 		<dependency>
@@ -43,7 +43,7 @@ The configuration information for Eureka Service is located outside the service 
 		</dependency>
 ```
 
-After the Maven dependencies have been defined, you need to tell the eureka service where to contact the *configuration server*. We have configured the application name for the service, the application profile, and the URI to connect to a configuration server in the ```bootstrap.properties``` file. Below it is the configuration information:
+After the Maven dependencies have been defined, you need to tell the *Eureka Server* service where to contact the *Configuration Server*. We have configured the application name for the service, the application profile, and the URI to connect to a *Configuration Server* in the ```bootstrap.properties``` file. Below it is the configuration information:
 
 ```
 spring.application.name=eureka
@@ -51,7 +51,7 @@ spring.profiles.active=default
 cloud.config.uri=http://localhost:8888
 ```
 
-Setting up the *eureka server* service starts by adding the following dependency:
+Setting up the *Eureka Server* service starts by adding the following dependency:
 
 ```
 		<dependency>
@@ -72,11 +72,11 @@ eureka.client.fetchRegistry=false
 eureka.client.waitTimeInMsWhenSyncEmpty=5
 ```
 
-The ```eureka.client.registerWithEureka``` attribute tells the service not to register with a *eureka server* service when the Spring Boot *eureka server*  application starts because this is the *eureka server* service. The ```eureka.client.fetchRegistry``` attribute is set to false so that when the *eureka server* service starts, it doesn’t try to cache its registry information locally. The last attribute, ```eureka.server.waitTimeInMsWhenSync```, speeds up the amount of time it will take for the Eureka service to start and show services registered with it. By default, *eureka service* won’t immediately advertise any services that register with it. It will wait five minutes to give all of the services a chance to register with it before advertising them.
+The ```eureka.client.registerWithEureka``` attribute tells the service not to register with a *eureka server* service when the Spring Boot *Eureka Server*  application starts because this is the *Eureka Server* service. The ```eureka.client.fetchRegistry``` attribute is set to false so that when the *Eureka Server* service starts, it doesn’t try to cache its registry information locally. The last attribute, ```eureka.server.waitTimeInMsWhenSync```, speeds up the amount of time it will take for the Eureka service to start and show services registered with it. By default, *Eureka server* won’t immediately advertise any services that register with it. It will wait five minutes to give all of the services a chance to register with it before advertising them.
 
-Individual services registering will take up to 30 seconds to show up in the *eureka server* service because Eureka requires three consecutive heartbeat pings from the service spaced 10 seconds apart before it will say the service is ready for use. 
+Individual services registering will take up to 30 seconds to show up in the *Eureka Server* service because Eureka requires three consecutive heartbeat pings from the service spaced 10 seconds apart before it will say the service is ready for use. 
 
-Finally, we add the ```@EnableEurekaServer``` annotation to the application bootstrap class we’re using to start your *eureka server* service.
+Finally, we add the ```@EnableEurekaServer``` annotation to the application bootstrap class we’re using to start your *Eureka Server* service.
 
 ```
 @SpringBootApplication
@@ -90,7 +90,7 @@ public class EurekaServerApplication {
 }
 ```
 
-You use only one new annotation to tell your service to be a *eureka server* service, that’s ```@EnableEurekaServer```. 
+You use only one new annotation to tell your service to be a *Eureka Server* service, that’s ```@EnableEurekaServer```. 
 
 ## Setup
 
