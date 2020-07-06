@@ -80,11 +80,63 @@ ribbon.ReadTimeout=60000
 ```
 
 Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent 
-a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the spring.application.name property. The 
+a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The 
 ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname.
 The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the *Gateway Server* service to register itself with Eureka, and the 
 ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the *Gateway Server*
 will re-contact the *Eureka Server* service for any changes to the registry.
 The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of *Eureka Server* services that the *Gateway Server*
 will use to resolve to service locations.
+
+Now, we are going to set up the *Gateway Server* by using the Netflix Zuul. First, we add the maven dependency in the *Gateway Server* pom.xml file. Below is the
+dependency we added:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+```
+This dependency tells the Spring Cloud framework that this service will be running Zuul and initialize Zuul appropriately.
+
+Next, we continue by setting up the *Gateway Server* bootstrap class. Below is the class that bootstrap *Gateway Server* application:
+
+```
+@SpringBootApplication
+@EnableZuulProxy
+@EnableDiscoveryClient
+public class GatewayServerApplication {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayServerApplication.class);
+
+	public static void main(String[] args) {
+		LOGGER.info("Gateway Application Started");
+		SpringApplication.run(GatewayServerApplication.class, args);
+	}
+
+}
+```
+
+The ```@EnableDiscoveryClient``` annotation is the trigger for Spring Cloud to enable the application to use the DiscoveryClient and Ribbon libraries.
+To create the *Gateway Server* we annotate the class with ```@EnableZuulProxy```. This annotation creates Zuul Server, loads the Zuul Reverse Proxy Filters and
+automatically use *Eureka Server* to lookup services by their service IDs and then use Netflix Ribbon to do client-side load balancing of requests from within Zuul.
+
+If you want to build your routing service and not use any Zuul pre-built capabilities, you can use the ```@EnableZuulServer```.
+
+The last step of setting up the *Gateway Server* is to configure the *Gateway Server*. Below are the configuration that you need to add to your application.properties file(remember our configuration files are located in GitHub):
+
+```
+#Gateway
+management.endpoints.web.exposure.include=*
+management.security.enabled=false
+
+zuul.prefix=/payroll
+```
+We haven't specified any routes. So, Zuul will automatically use the Eureka service ID of the service being called and map it to a downstream service instance.
+
+The beauty of using Zuul with Eureka is that not only do you now have a single endpoint that you can make calls through, but with Eureka, you can also add and
+remove instances of a service without ever having to modify Zuul.
+
+The property ```zuul.prefix``` add a the payroll prefix to paths. We have configured the Spring Boot Actuator to expose all endpoints with the property 
+```management.endpoints.web.exposure.include``` and disabled security by using the property ```management.security.enabled```
 
