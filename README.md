@@ -19,6 +19,7 @@ Payroll is using the following technologies:
 - Spring Cloud Zuul Gateway (for routing, centralizing cross cutting concerns, hiding internal micro service structure )
 - Spring Cloud OAuth2 (for implementing the authentication and authorization according the OAuth2 standard)
 - Spring Cloud Sleuth (for managing distributed tracing)
+- Spring Cloud Zipkin (for visualizing the tracing of transaction)
 
 
 ## Services
@@ -33,24 +34,29 @@ Payroll is composed of services:
 
 ### Configuration Server
 
-In microservice architecture our business logic is separated in small services. Each service has its configuration files. As the services number continues to grow, the harder becomes to manage each service configuration information. We have solved this problem by centralizing the configuration information of all services in a single repository. We use the *Configuration Server* service to access the configuration information of the centralized repository. Thus, we are relieved from the chore to write code for accessing the configuration information from the repository. Below is the link where you can find more detail about the *Configuration Server* service:
+In microservice architecture our business logic is separated in small services. Each service has its configuration files. As the services number continues to grow, the harder becomes to manage each service configuration information. We have solved this problem by centralizing the configuration information of all services in a single repository. We use the *Configuration Server* service to access the configuration information of the centralized repository. Thus, we are relieved from the chore to write code for accessing the configuration information from the repository. Below is the link where you can find more detailed information about:
 
-[Configuration Server Service](https://github.com/rshtishi/payroll/tree/master/config-server)
+[Configuration Server Service](https://github.com/rshtishi/payroll/blob/master/config-server/README.md)
 
 ### Eureka Server
 
-Microservices architecture is made of smaller independent services deployed in different machines. *Eureka Server*  is used from services consumers for discovering the IP address of the service. Every instance of service that starts, will register their IP in *Eureka Server*. Netflix Ribbon library provides client-slide load balancing. Periodically, the Netflix Ribbon library will ping the Eureka service and refresh its local cache of service locations. When service will call another service it will use the Netflix Ribbon to retrieve the service location of the service that will be called. In the link below you can find more detail:
+Microservices architecture is made of smaller independent services deployed in different machines. *Eureka Server*  is used from services consumers for discovering the IP address of the service. Every instance of service that starts, will register their IP in *Eureka Server*. Netflix Ribbon library provides client-slide load balancing. Periodically, the Netflix Ribbon library will ping the Eureka service and refresh its local cache of service locations. When service will call another service it will use the Netflix Ribbon to retrieve the service location of the service that will be called. In the link below you can find more detailed information
+about:
 
 [Eureka Server Service](https://github.com/rshtishi/payroll/blob/master/eureka-server/README.md)
 
 ### Gateway Server
 
-In a distributed architecture like a microservices one, you need to implement the security, logging and tracking of the users across multiple service calls. To solve this problems, we need to abstract these cross-cutting concerns into a gateway server that can sit independently and act as a filter and router for all the microservice calls in your application. Your service clients no longer directly call a service. Instead, all calls are routed through the gateway server, which acts as a single Policy Enforcement Point (PEP), and then routed to a final destination.
+In a distributed architecture like a microservices one, you need to implement the security, logging and tracking of the users across multiple service calls. To solve this problems, we need to abstract these cross-cutting concerns into a gateway server that can sit independently and act as a filter and router for all the microservice calls in your application. Your service clients no longer directly call a service. Instead, all calls are routed through the gateway server, which acts as a single Policy Enforcement Point (PEP), and then routed to a final destination. In the link below you can find more detailed information about:
+
+[Gateway Server Service](https://github.com/rshtishi/payroll/blob/master/gateway-server/readme.md)
 
 ### OAuth2 Server
 
-In this example of microservice architecture we have used the OAUTH2 for securing our services. OAuth2 is a token-based security framework that allows a user to authenticate themselves with a third-party authentication server. If the user successfully authenticates, they will be presented a token that must be sent with every request. The token can then be validated back to the authentication server. The OAuth2 authentication server is the intermediary between the application and the services being consumed. 
-The OAuth2 server allows the user to authenticate themselves without having to pass their user credentials down to every service the application is going to call on behalf of the user.
+In this example of microservice architecture, we have used the OAUTH2 for securing our services. OAuth2 is a token-based security framework that allows a user to authenticate themselves with a third-party authentication server. If the user successfully authenticates, they will be presented with a token that must be sent with every request. The token can then be validated back to the authentication server. The OAuth2 authentication server is the intermediary between the application and the services being consumed. The OAuth2 server allows the user to authenticate themselves without having to pass their user credentials down to every service the application is going to call on behalf of the user. In the link below you can find more detailed information about:
+
+[OAuth2 Server Service](https://github.com/rshtishi/payroll/tree/master/oauth2-server)
+
 
 ### Employee Service
 
