@@ -472,3 +472,29 @@ that need to retrieve the user and authorities that the user has. Also, we have 
 
 
 ## Setup
+
+Prerequisite needed before setup:
+
+- Git
+- GitHub
+- Configuration Server should be started and running
+- Eureka Server should be started and running
+
+Execute the following commands:
+
+- mvn clean install (to build the project)
+- mvn spring-boot:run (to run the project)
+
+To test authentication of user, create a request in postman with the following attributes:
+
+- ```url: http://localhost:8901/oauth/token``` [Http Method: POST]
+- ```Authentication Type: Basic``` [username:payroll, password: test]
+- ```Body: Form Data``` [grant_type:password, scope:webclient, username:rando, password:test]
+
+Now that you have a valid OAuth2 access token, we can use the /auth/user endpoint that we created in our authentication service to retrieve information about the user
+associated with the token.
+
+In postman create the request below to access the user information:
+
+- ```url:http://localhost:8901/user``` [Http Method:Get]
+- ```Authentication Type:Bearer Token``` [Token:access token]
