@@ -102,6 +102,8 @@ public class DepartmentRestControllerUnitTest {
 		result.andExpect(header().string("Location", "http://localhost/departments/1"));
 		result.andExpect(jsonPath("$.id", is(1)));
 		result.andExpect(jsonPath("$.name", is("Finance")));
+		
+		
 	}
 
 	@Test
