@@ -282,4 +282,4 @@ Execute the following commands:
 
 Use the link below to access the routes mapped in *Gateway Server*:
 
-- ```localhost:5555/routes``` [Http method: GET] (retrieves the routing information)
+- ```https://localhost:5555/actuator/routes``` [Http method: GET] (retrieves the routing information)
