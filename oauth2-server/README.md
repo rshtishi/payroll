@@ -80,7 +80,7 @@ Next, we add the dependencies needed for the *OAuth2 Server* to communicate with
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-    <dependency>
+                <dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
@@ -306,6 +306,168 @@ public class OAuth2ConfigParameters {
 }
 ```
 
+The ```oauth2.client.id``` property holds the name application we are registering and ```oauth2.client.secret``` property holds the password that will be presented
+when the payroll services call the *OAuth2 Server*  to receive the OAuth2 access token. The ```oauth2.jwt.*``` properties hold the information of the self-signed the certificate that we are going to use to sign the generated JWT tokens.
+
+
+In the configuration class below, you’ll find all the required Spring ```@Beans``` for JWT token.
+
+```
+@Configuration
+public class JWTTokenStoreConfig {
+
+	@Autowired
+	private OAuth2ConfigParameters oAuth2ConfigParameters;
+
+	@Bean
+	public JwtAccessTokenConverter jwtAccessTokenConverter() {
+		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(oAuth2ConfigParameters.getJwt().getKeyStore(),
+				oAuth2ConfigParameters.getJwt().getKeyStorePassword().toCharArray());
+		KeyPair keyPair = keyStoreKeyFactory.getKeyPair(oAuth2ConfigParameters.getJwt().getKeyPairAlias());
+		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+		jwtAccessTokenConverter.setKeyPair(keyPair);
+		return jwtAccessTokenConverter;
+	}
+
+	@Bean
+	public TokenStore tokenStore() {
+		return new JwtTokenStore(jwtAccessTokenConverter());
+	}
+
+	@Bean
+	@Primary
+	public DefaultTokenServices defaultTokenServices() {
+		DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+		defaultTokenServices.setTokenStore(tokenStore());
+		defaultTokenServices.setSupportRefreshToken(true);
+		return defaultTokenServices;
+	}
+
+	@Bean
+	public OAuth2ConfigParameters oAuth2ConfigParameters() {
+		return new OAuth2ConfigParameters();
+	}
+	
+	@Bean
+	public TokenEnhancer tokenEnhancer() {
+		return new JwtTokenEnhancer();
+	}
+	
+}
+```
+
+The ```JWTTokenStoreConfig``` class is used to define how Spring will manage the creation, signing, and translation of a JWT token. The ```JwtAccessTokenConverter``` uses the self-signed certificate to sign the generated tokens. The ```JwtTokenStore``` reads data from the tokens themselves. The ```DefaultTokenServices``` uses the ```TokenStore``` to persist the tokens.
+
+Below is the *OAuth2 Server* configuration class:
+
+```
+@Configuration
+public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private UserDetailsService userDetailsService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	OAuth2ConfigParameters oauth2ConfigParameters;
+
+	@Autowired
+	private TokenStore tokenStore;
+	@Autowired
+	private JwtAccessTokenConverter jwtAccessTokenConverter;
+	@Autowired
+	private TokenEnhancer tokenEnhancer;
+	@Autowired
+	private DefaultTokenServices defaultTokenServices;
+
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer, jwtAccessTokenConverter));
+		defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
+		endpoints.tokenStore(tokenStore).accessTokenConverter(jwtAccessTokenConverter).tokenEnhancer(tokenEnhancerChain)
+				.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
+	}
+
+	@Override
+	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		clients.inMemory().withClient(oauth2ConfigParameters.getClient().getId())
+				.secret(passwordEncoder.encode(oauth2ConfigParameters.getClient().getSecret()))
+				.authorizedGrantTypes("refresh_token", "password", "client_credentials")
+				.scopes("webclient", "mobileclient");
+	}
+}
+
+```
+
+The ```OAuth2Config``` class is the configuration of *OAuth2 Server* and extends the ```AuthenticationServerConfigurer``` class. The ```AuthenticationServerConfigurer``` class is a core piece of Spring Security. It provides the basic mechanisms for carrying out key authentication and authorization functions. 
+
+The first method, ```configure()```, we configured to use the default authentication manager and user detail service that comes with Spring. Also, in the methods ```tokenStore()```, ```accessTokenConverter()``` and ```tokenEnhancer()``` we have injected the beans for creating and signing JWT token. This is the hook to tell
+the Spring Security OAuth2 to use **signed JWT token**.
+
+The second method, ```configure()```, is used to define what client applications are registered with your authentication service. The ```ClientDetailsServiceConfigurer``` class supports two different types of stores for application information: an in-memory store and a JDBC store. In this example,
+we have chosen an in-memory store for simplicity reasons. The two method calls ```withClient()``` and ```secret()``` provide the name of the application (payroll) that you’re registering along with a secret (a password) that will be presented when the payroll application calls your *OAuth2 Server* to receive an OAuth2 access token.
+The next method, ```authorizedGrantTypes()```, is passed a comma-separated list of the authorization grant types that will be supported by your *OAuth2 Server*. In our service, we’ll support the password and client credential grants. The ```scopes()``` method is used to define the boundaries that the calling application can operate in when they’re asking your *OAuth2 Server* for an access token.
+
+
+Below is the class that we use to add additional information to JWT token:
+
+```
+public class JwtTokenEnhancer implements TokenEnhancer {
+
+	@Override
+	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+		Map<String, Object> info = new HashMap<>();
+        info.put("details", authentication.getDetails());
+        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
+		return accessToken;
+	}
+
+}
+
+```
+
+Below we have configured the users and roles availabe in payroll application:
+
+```
+@Configuration
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	DataSource dataSource;
+
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	@Override
+	@Bean
+	public UserDetailsService userDetailsServiceBean() throws Exception {
+		return super.userDetailsServiceBean();
+	}
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder())
+				.usersByUsernameQuery("select username,password,enabled from users where username = ?")
+				.authoritiesByUsernameQuery("select username,authority from authorities where username = ?");
+	}
+}
+
+```
+
+
+The ```WebSecurityConfigurer``` class extends the ```WebSecurityConfigurerAdapter``` class and mark it with the ```@Configuration``` annotation. In the ```configure()``` method we have chosen the authentication by JDBC. The users and their roles information are stored in the H2 database. We have configured the queries
+that need to retrieve the user and authorities that the user has. Also, we have configured BCrypt for encryption of passwords.
 
 
 
