@@ -30,6 +30,10 @@ team to build their solutions. We need to:
 
 ## Architecture
 
+The architecture of Gateway Server is like below:
+
+![Gateway Server Architecture](https://github.com/rshtishi/payroll/blob/master/gateway-server/src/main/resources/static/images/gateway-server.jpeg)
+
 ## Implementation Details
 
 The configuration information for *Gateway Server* is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* 
