@@ -313,7 +313,162 @@ Below are the Logback configuration file for pushing the logs file to the centra
 
 </configuration>
 ```
+Below we have configured Gateway Server to communicate with Zipkin:
 
-### 
+```
+#Zipkin
+spring.zipkin.baseUrl=http://localhost:9411
+```
+Zipkin helps us to visualize complex transaction.
+
+### Configuring the mechanism for invoking services
+
+We’re going to see an example of how to use a ```RestTemplate``` that’s Ribbon-aware. Below we have declared the bean that is going to be used for invoking other
+services:
+
+```
+	@LoadBalanced
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate;
+	}
+```
+The ```@LoadBalanced``` annotation tells Spring Cloud to create a Ribbon backed ```RestTemplate``` class.
+
+Below we have used the Ribbon backed ```RestTemplate``` to call the *Employee* service:
+
+```
+@Component
+public class EmployeeRestTemplate {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeRestTemplate.class);
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	public long countEmployeesByDepartmentId(int departmentId) {
+		LOGGER.info("Called countEmployeesByDepartmentId, departmentId: "+departmentId);
+		ResponseEntity<Long> response = restTemplate.exchange("http://employee/employees/{departmentId}/count", 
+				HttpMethod.GET, null, Long.class, departmentId);
+		employeeCount = response.getBody();
+		return response.getBody();
+	}
+}
+```
+The Ribbon-enabled RestTemplate will parse the URL passed into it and use whatever is passed in as the server name as the key to query Ribbon for an instance of a service. The actual service location and port are completely abstracted from the developer.
+
+### Configuring client-side resiliency patterns
+
+Client resiliency software patterns are focused on protecting a remote resource’s(another microservice call or database lookup) client from crashing when the remote
+the resource is failing because that remote service is throwing errors or performing poorly. We are going to use hystrix for implementing this patterns.
+ 
+Below we activate the Hystrix Service:
+ 
+```
+@SpringBootApplication
+@EnableCircuitBreaker
+@EnableResourceServer
+public class DepartmentApplication {
+        ...
+}
+```
+The ```@EnableCircuitBreaker``` tells Spring Cloud you’re going to use Hystrix for your service.
+
+Below we have configured **Circuit breakers** and **Fallbacks** pattern when invoking the *Employee* Service:
+
+```
+@Component
+public class EmployeeRestTemplate {
+	...
+	@HystrixCommand(fallbackMethod = "countEmployeesByDepartmentIdFallback")
+	public long countEmployeesByDepartmentId(int departmentId) {
+		...
+		return response.getBody();
+	}
+	
+	public long countEmployeesByDepartmentIdFallback(int departmentId) {
+		return -1;
+	}
+
+}
+```
+
+The ```@HystrixCommand``` annotation to marks the ```countEmployeesByDepartmentId()``` method as being managed by a **Hystrix circuit breaker**.When the Spring framework sees the ```@HystrixCommand```, it will dynamically generate a proxy that will wrap the method and manage all calls to that method through a thread pool of threads specifically set aside to handle remote calls. The fallback method attribute defines a single function in your class that will be called if the call from Hystrix fails.
+
+### Configuring to propagate the parent thread’s context to threads managed by a Hystrix command
+
+Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. For example, we pass a
+correlation ID or authentication token in the HTTP header of the REST call that can then be propagated to any downstream service calls.
+
+We use the ```UserContextFilter``` class for parsing the HTTP header and retrieving data. Below is the implementation:
+
+```
+@Component
+public class UserContextFilter implements Filter {
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		UserContextHolder.getContext().setAuthorization(httpServletRequest.getHeader(UserContext.AUTHORIZATION));
+		UserContextHolder.getContext().setTraceId(httpServletRequest.getHeader(UserContext.TRACE_ID));
+		chain.doFilter(httpServletRequest, response);
+	}
+
+}
+
+```
+
+The values retrieved from the HTTP header of the call are set into a UserContext, which is stored in UserContextHolder.
+
+Below is the ```UserContext``` class:
+
+```
+@Getter
+@Setter
+public class UserContext {
+
+	public static final String AUTHORIZATION = "Authorization";
+	public static final String TRACE_ID = "trace-id";
+
+	private String authorization = new String();
+	private String traceId = new String();
+
+}
+
+```
+
+Below is the ```UserContextHolder``` class:
+
+```
+public class UserContextHolder {
+
+	private static final ThreadLocal<UserContext> userContext = new ThreadLocal<UserContext>();
+
+	public static final UserContext getContext() {
+		UserContext context = userContext.get();
+
+		if (context == null) {
+			context = createEmptyContext();
+			userContext.set(context);
+
+		}
+		return userContext.get();
+	}
+
+	public static final void setContext(UserContext context) {
+		userContext.set(context);
+	}
+
+	public static final UserContext createEmptyContext() {
+		return new UserContext();
+	}
+
+}
+```
+
+The ```UserContextHolder``` class is used to store the ```UserContext``` in a ```ThreadLocal``` class.
+
 
 ## Setup
