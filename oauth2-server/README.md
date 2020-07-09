@@ -34,6 +34,8 @@ and that it hasn’t expired. The authentication service needs to:
 
 ## Implemenations Details
 
+### Configuring Communication With *Configuration Server*
+
 The configuration information for *OAuth2 Server* is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* for retrieving *OAuth2 Server* configuration information:
 
 ```
@@ -50,6 +52,8 @@ spring.application.name=oauth2
 spring.profiles.active=default
 cloud.config.uri=http://localhost:8888
 ```
+
+### Configuring Communication With *Eureka Server*
 
 Second, we need to register *Oauth2 Server* to service discovery. The first thing to be done is adding the Spring Eureka Client dependency to the *OAuth2 Server* service’s pom.xml file like below:
 
@@ -72,6 +76,8 @@ ribbon.ReadTimeout=60000
 ```
 
 Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname. The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the Gateway Server service to register itself with Eureka, and the ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the Gateway Server will re-contact the Eureka Server service for any changes to the registry. The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of Eureka Server services that the Gateway Server will use to resolve to service locations.
+
+### Configuring Communication With the Database
 
 Next, we add the dependencies needed for the *OAuth2 Server* to communicate with the database. Below are the dependencies:
 
@@ -206,6 +212,8 @@ The **02-data-insert.xml** file has the changeset for populating the tables with
 	</changeSet>
 </databaseChangeLog>
 ```
+
+### Configuring the *OAuth2 Server*
 
 Finally, we add the dependencies needed for creating the OAuth2 authentication service.
 
