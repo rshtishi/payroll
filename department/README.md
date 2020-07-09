@@ -396,10 +396,7 @@ public class EmployeeRestTemplate {
 
 The ```@HystrixCommand``` annotation to marks the ```countEmployeesByDepartmentId()``` method as being managed by a **Hystrix circuit breaker**.When the Spring framework sees the ```@HystrixCommand```, it will dynamically generate a proxy that will wrap the method and manage all calls to that method through a thread pool of threads specifically set aside to handle remote calls. The fallback method attribute defines a single function in your class that will be called if the call from Hystrix fails.
 
-### Configuring to propagate the parent thread’s context to threads managed by a Hystrix command
-
-Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. For example, we pass a
-correlation ID or authentication token in the HTTP header of the REST call that can then be propagated to any downstream service calls.
+### Propagating *Trace ID* and *Access Token* 
 
 We use the ```UserContextFilter``` class for parsing the HTTP header and retrieving data. Below is the implementation:
 
@@ -470,5 +467,47 @@ public class UserContextHolder {
 
 The ```UserContextHolder``` class is used to store the ```UserContext``` in a ```ThreadLocal``` class.
 
+Below we have implemented and interceptor that will intercept the calls to other service and inject the *Trace ID* and the *Access Token*:
+
+```
+public class UserContextInterceptor implements ClientHttpRequestInterceptor {
+
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+			throws IOException {
+		HttpHeaders headers = request.getHeaders();
+		request.getHeaders().remove(UserContext.AUTHORIZATION);
+		headers.add(UserContext.AUTHORIZATION, UserContextHolder.getContext().getAuthorization());
+		headers.add(UserContext.TRACE_ID, UserContextHolder.getContext().getTraceId());
+		return execution.execute(request, body);
+	}
+
+}
+```
+The ```UserContextInterceptor``` class is used to inject the Trace ID and Access Token into any outgoing HTTP-based service requests being executed from a RestTemplate instance.
+
+Below we add the ```UserContextInterceptor``` to the RestTemplate:
+
+```
+	@LoadBalanced
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
+		if (interceptors == null) {
+			restTemplate.setInterceptors(Collections.singletonList(new UserContextInterceptor()));
+		} else {
+			interceptors.add(new UserContextInterceptor());
+			restTemplate.setInterceptors(interceptors);
+		}
+		return restTemplate;
+	}
+```
+
+
+### Propagating the parent thread’s context to threads managed by a Hystrix command
+
+Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. For example, we pass a
+correlation ID or authentication token in the HTTP header of the REST call that can then be propagated to any downstream service calls.
 
 ## Setup
