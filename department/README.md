@@ -38,7 +38,6 @@ The service need to:
 
 ## Architecture
 
-![OAuth2 Server Architecture](https://github.com/rshtishi/payroll/blob/master/oauth2-server/src/main/resources/static/images/oauth2-server.jpeg)
 
 ## Implemenations Details
 
