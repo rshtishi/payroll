@@ -29,8 +29,8 @@ Payroll is composed of services:
 - Eureka Server
 - Gateway Server
 - OAuth2 Server
-- Department Service
-- Employee Service
+- Department
+- Employee
 
 ### Configuration Server
 
@@ -53,18 +53,22 @@ In a distributed architecture like a microservices one, you need to implement th
 
 ### OAuth2 Server
 
-In this example of microservice architecture, we have used the OAUTH2 for securing our services. OAuth2 is a token-based security framework that allows a user to authenticate themselves with a third-party authentication server. If the user successfully authenticates, they will be presented with a token that must be sent with every request. The token can then be validated back to the authentication server. The OAuth2 authentication server is the intermediary between the application and the services being consumed. The OAuth2 server allows the user to authenticate themselves without having to pass their user credentials down to every service the application is going to call on behalf of the user. In the link below you can find more detailed information about:
+In this example of microservice architecture, we have used the **OAUTH2** specification for securing our services. OAuth2 is a token-based security framework that allows a user to authenticate themselves with a third-party authentication server. If the user successfully authenticates, they will be presented with a token that must be sent with every request. The token can then be validated back to the *OAuth2 Server*. The *OAuth2 Server* is the intermediary between the application and the services being consumed. The *OAuth2 Server* allows the user to authenticate themselves without having to pass their user credentials down to every service the application is going to call on behalf of the user. In the link below you can find more detailed information about:
 
 [OAuth2 Server Service](https://github.com/rshtishi/payroll/tree/master/oauth2-server)
 
 
-### Employee Service
+### Employee 
 
-Employee Service implements the business logic for managing employees. Environment configuration properties are separated from the service code and runtime code through the use configuration server. Whenever a new instance of the employee service is started it automatically register itself in Eureka Server. Thus making the service discoverable by other application clients. Employee Service is protected resource, a user needs to include in authentication HTTP header containing OAUTH2 access token in order to access the service.  To enable distributed tracing we have used spring cloud sleuth to link together transaction across multiple services. ELK(Elasticsearch Logstash Kibana) is used to aggregate logs from multiple services into a single searchable source. We have used zipkin to understand the flow of transaction. We have used Zipkin for visualization of the flow of a transaction across multiple services.
+*Employee* service implements the business logic for managing employees. The configuration information for *Employee* is accessed through *Configuration Server*. Whenever a new instance of the *Employee* service is started it automatically registers itself in *Eureka Server*. Thus making the service discoverable by other applications. *Employee* service is a protected resource. A user needs to include in authentication HTTP header containing **OAUTH2 access token** to access the service. To enable distributed tracing we have used spring cloud sleuth to link together transactions across multiple services. We have used Zipkin to understand the flow of transactions. We have used Zipkin for visualization of the flow of a transaction across multiple services.
 
-### Department Service
+[Employee Service](https://github.com/rshtishi/payroll/tree/master/employee)
 
-Department Service implements the business logic for managing the departments. It implements the same technology as the employee service for separation of configuration from service code, service discovery, security and distributed tracing. Department Service makes calls to employee service to retrieve number of employee for each department. We have used client resiliency software patterns (circuit breakers, fallbacks and bulkheads) on protecting department service from crashing because the employee service is throwing error or behaving poorly. We have used Redis cache to cache the value of employee number returned from employee service. Also we have implemented event driven architecture with kafka. Everytime a new employee is created in employee service it publish a message to the queue. Department service monitors the queue for any messages published and updates the cache for each message published from employee service.
+### Department
+
+*Department* service implements the business logic for managing the departments. It implements the same technology as the employee service for separation of configuration from service code, service discovery, security, and distributed tracing. Department Service makes calls to *Employee* service to retrieve the number of employees for each department. We have used client resiliency software patterns (circuit breakers, fallbacks, and bulkheads) on protecting department service from crashing because the employee service is throwing an error or behaving poorly. We have used **Redis** to cache the number of employees returned from *Employee* service. Also, we have implemented event-driven architecture with *Kafka*. Every time a new employee is created or deleted in employee service it publishes a message to the queue. Department service monitors the queue for any messages published and updates the cache for each message published from *Employee* service.
+
+[Department Service](https://github.com/rshtishi/payroll/tree/master/department)
 
 ## Setup
 
