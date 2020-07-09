@@ -32,6 +32,8 @@ and that it hasn’t expired. The authentication service needs to:
 
 ## Architecture
 
+![OAuth2 Server Architecture](https://github.com/rshtishi/payroll/blob/master/oauth2-server/src/main/resources/static/images/oauth2-server.jpeg)
+
 ## Implemenations Details
 
 ### Configuring Communication With *Configuration Server*
@@ -106,6 +108,7 @@ spring.datasource.username=sa
 spring.datasource.password={cipher}AQApFhvGmUI3R8ekFYlYo0n/TmYAJMuYIqPpE65jRzdQjmjWwgyLMnevmjytmD2krEDIasLMt5UaQwUjA+TiF036Oilny2nHnCJeqkn/ZKpxavyrrmBG9EACBUt/5I7ztZRNQGAfHflB1OM4WamBJ+7aD1MFSjqervyXOzE547DvWsRYH++WF/380jY5oCCLwiPf1QBCDW6qYE6MgmbZYkq4Rk27c0xgMq4NdSJFrUSpd0D9cuG1eKRFS2ZXwUOAGb5ksiJrWAbliaYq0g5MKvbw1YwLXKhnHysdwMyIZ6faWRF2OYuagf40fB1N3T2sp8o9MZo7x1Kxt9mc1CeigYjH6OOK/pfLn6HqLuoKV9ZPNVCpwysBV8b/FBgC+wqHPuk=
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ```
+### Configuring Liquibase for Managing to Manage Database Schema Changes
 
  We have chosen **Liquibase** to manage database schema changes. Below is the dependency needed for including Liquibase:
  
