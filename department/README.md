@@ -64,9 +64,256 @@ cloud.config.uri=http://localhost:8888
 
 ### Configuring communication with *Eureka Server*
 
-Second, we need to register *Depertment* serviceto service discovery. The first thing to be done is adding the Spring Eureka Client dependency to the 
+Second, we need to register *Depertment* service to service discovery. The first thing to be done is adding the Spring Eureka Client dependency to the 
 *Depertment* service’s pom.xml file like below:
 
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+```
 
+Then we need to add the eureka configuration information in the *Depertment* service to enable communication with Eureka. Below are the configuration information that are added:
 
+```
+#Eureka
+cloud.config.enabled=true
+eureka.instance.preferIpAddress=true
+eureka.client.registerWithEureka=true
+eureka.client.fetchRegistry=true
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+```
 
+Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname. The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the *Depertment* service to register itself with Eureka, and the ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the *Depertment* service will re-contact the Eureka Server service for any changes to the registry. The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of Eureka Server services that the Gateway Server will use to resolve to service locations.
+
+### Configuring communication with the *database*
+
+Next, we add the dependencies needed for the *Depertment* service to communicate with the database. Below are the dependencies:
+
+```
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+```
+
+Below we have configured the *Department* service to communicate with H2 database:
+
+```
+#H2 DB 
+spring.jpa.hibernate.ddl-auto=none
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:mem:departmentdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password={cipher}AQApFhvGmUI3R8ekFYlYo0n/TmYAJMuYIqPpE65jRzdQjmjWwgyLMnevmjytmD2krEDIasLMt5UaQwUjA+TiF036Oilny2nHnCJeqkn/ZKpxavyrrmBG9EACBUt/5I7ztZRNQGAfHflB1OM4WamBJ+7aD1MFSjqervyXOzE547DvWsRYH++WF/380jY5oCCLwiPf1QBCDW6qYE6MgmbZYkq4Rk27c0xgMq4NdSJFrUSpd0D9cuG1eKRFS2ZXwUOAGb5ksiJrWAbliaYq0g5MKvbw1YwLXKhnHysdwMyIZ6faWRF2OYuagf40fB1N3T2sp8o9MZo7x1Kxt9mc1CeigYjH6OOK/pfLn6HqLuoKV9ZPNVCpwysBV8b/FBgC+wqHPuk=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+```
+
+### Configuring Liquibase for managing to manage database schema changes
+
+We have chosen **Liquibase** to manage database schema changes. Below is the dependency needed for including Liquibase:
+
+```
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+```
+
+Below is the configuration information for Liquibase:
+
+```
+#Liquibase 
+spring.liquibase.change-log=classpath:db/liquibase-changelog.xml
+spring.liquibase.enabled=true
+```
+
+Liquibase uses a changelog to explicitly list database changes in order. The changelog acts as a ledger of changes and contains a list of changesets (units of change) that Liquibase can execute on a database. The property ```spring.liquibase.enabled``` enable Liquibase in our application and we determine the location of changelog
+file in ```spring.liquibase.change-log``` property.
+
+Below is the content of **liquibase-changelog.xml**:
+
+```
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<include file="changelog/01-create-department-scheme.xml"
+		relativeToChangelogFile="true" />
+	<include file="changelog/02-data-insert-departments.xml"
+		relativeToChangelogFile="true" />
+	<include file="changelog/03-alter-departments.xml"
+		relativeToChangelogFile="true" />
+
+</databaseChangeLog>
+```
+
+As we can see above, we have grouped the changeset in three files that are included in liquibase-changelog.xml.
+
+The **01-create-scheme.xml** file has the changeset for creating the schema of the database, as we can see below:
+
+```
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="01" author="rshtishi">
+
+		<createTable tableName="department">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="name" type="varchar(30)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+	</changeSet>
+</databaseChangeLog>
+```
+
+The **02-data-insert.xml** file has the changeset for populating the tables with information. Below is the content of the file:
+
+```
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="02" author="rshtishi">
+		<insert tableName="department">
+			<column name="id" valueNumeric="1" />
+			<column name="name" value="Software Development" />
+		</insert>
+		<insert tableName="department">
+			<column name="id" valueNumeric="2" />
+			<column name="name" value="Human Resources" />
+		</insert>
+	</changeSet>
+</databaseChangeLog>
+```
+
+The **03-alter-departments.xml** file has the changeset that modifies department table. Below is the content of the file:
+
+```
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet  id="03" author="rshtishi">
+		<addColumn  tableName="department">
+			<column name="no_of_employees" type="int" defaultValue="0" />
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>
+```
+
+### Configuring the security
+
+The *Department* service is a **protected resource**. We need to ensure that only authenticated users who have the proper authorization can access it. Below are 
+the dependencies for implementing security:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-oauth2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-security</artifactId>
+		</dependency>
+```
+
+Below are the configuration information needed to implement the security:
+
+```
+#OAuth2
+security.oauth2.resource.userInfoUri=http://localhost:8901/user
+security.jwt.public-key=classpath:public.txt
+```
+The ```security.oauth2.resource.userInfoUri``` property defines the callback URL that is going to be used by the application to get user information. The last attribute is ```security.jwt.public-key``` .This is property, that holds the public key for decrypting the JWT token.
+
+Below we have created the class that is going to bootstrap the application:
+
+```
+@SpringBootApplication
+@EnableResourceServer
+public class DepartmentApplication {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentApplication.class);
+
+	public static void main(String[] args) {
+		SpringApplication.run(DepartmentApplication.class, args);
+		LOGGER.info("Department Application Started");
+	}
+}
+```
+
+### Configuring distributed logging
+
+Below we have added Spring Cloud Sleuth and Zipkin in our *Department* service:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+```
+
+We have added the dependency below for encoding the logs to format that is acceptable from Logstash:
+
+```
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>4.9</version>
+		</dependency>
+```
+
+Below are the Logback configuration file for pushing the logs file to the central location:
+
+```
+<configuration>
+	<appender name="STASH"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_STASH_LOCATION}/department.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_STASH_LOCATION}/department.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+	</appender>
+	
+	<!-- Application logs at trace level -->
+	<logger name="com.github.rshtishi.department" level="info"
+		additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="STASH" />
+	</logger>
+
+</configuration>
+```
+
+### 
+
+## Setup
