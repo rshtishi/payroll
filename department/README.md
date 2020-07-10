@@ -847,4 +847,61 @@ The ```@StreamListener``` annotation tells Spring Cloud Stream to execute the ``
 
 ### Configuring Swagger for documenting REST endpoints
 
+We begin by adding the following dependency:
+
+```
+		<dependency>
+			<groupId>com.mangofactory</groupId>
+			<artifactId>swagger-springmvc</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+```
+
+The next step is to enable swagger-springmvc. This is done by adding the ```@EnableSwagger``` annotation:
+
+```
+@SpringBootApplication
+@EnableSwagger
+@EnableCircuitBreaker
+@EnableResourceServer
+@EnableBinding(Sink.class)
+public class DepartmentApplication {
+   ...
+}
+```
+
+After that, we download the stable version of Swagger UI from the project’s GitHub site at: [Swagger Link](https://github.com/swagger-api/swagger-ui). Then, Move the contents of the dist folder that is in the cloned/downloaded code to a newly created swagger-ui folder under the *Department* service project’s src\main\resources\static folder. 
+
+Out of the box, Spring Boot will automatically serve any static content residing under the static folder. Hence, no configuration changes are required on the Spring Boot end. However, by default, the Swagger UI comes with a hardcoded reference to a Swagger Petstore service. To make the Swagger UI use our *Department* service,open the index.html file and modify the url variable to point to ```http://localhost:8081/api-docs```, as shown below:
+
+```
+    $(function () {
+      window.swaggerUi = new SwaggerUi({
+      //url: "http://petstore.swagger.wordnik.com/api/api-docs",
+      url: "http://localhost:8081/api-docs",
+      dom_id: "swagger-ui-container",
+      supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+      onComplete: function(swaggerApi, swaggerUi){
+        log("Loaded SwaggerUI");
+```
+
 ## Setup
+
+Prerequisite needed before setup:
+
+- Zipkin should be started and running
+- Kafka should be started and running
+- Redis should be started and running
+
+- Git
+- GitHub
+- Configuration Server should be started and running
+- Eureka Server should be started and running
+- Gateway Server should be started and running
+- OAuth2 Server shhould be started and running
+- Employee service should be started and be running 
+
+Execute the following commands:
+
+- ```mvn clean install``` (to build the project)
+- ```mvn spring-boot:run``` (to run the project)
