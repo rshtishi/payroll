@@ -508,7 +508,343 @@ Below we add the ```UserContextInterceptor``` to the RestTemplate:
 
 ### Propagating the parent thread’s context to threads managed by a Hystrix command
 
-Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. For example, we pass a
-correlation ID or authentication token in the HTTP header of the REST call that can then be propagated to any downstream service calls.
+Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. 
+
+We pass the correlation ID and the authentication token in the HTTP header of the REST call that can then be propagated to any downstream service calls. Above,
+we have set a Spring Filter class to intercept every call into your REST service and retrieve this information from the incoming HTTP request and store this contextual information in a custom User-Context object. Then, we have used an interceptor to add this information to when invoking other services.
+
+As expected, once the call hits the Hystrix protected method, you’ll get no value written out for the Trace ID and Authorization. Fortunately, Hystrix and Spring Cloud offer a mechanism to propagate the parent thread’s context to threads managed by the Hystrix Thread pool. This mechanism is called a **HystrixConcurrencyStrategy**.
+
+To implement a custom HystrixConcurrency-Strategy we start by defining our custom Hystrix Concurrency Strategy class. Below is our custom Hystrix Concurrency Strategy class:
+
+```
+public class ThreadLocalAwareStrategy extends HystrixConcurrencyStrategy {
+
+	private HystrixConcurrencyStrategy existingConcurrencyStrategy;
+
+	public ThreadLocalAwareStrategy(HystrixConcurrencyStrategy existingConcurrencyStrategy) {
+		this.existingConcurrencyStrategy = existingConcurrencyStrategy;
+	}
+
+	@Override
+	public BlockingQueue<Runnable> getBlockingQueue(int maxQueueSize) {
+		return existingConcurrencyStrategy != null ? existingConcurrencyStrategy.getBlockingQueue(maxQueueSize)
+				: super.getBlockingQueue(maxQueueSize);
+	}
+
+	@Override
+	public <T> HystrixRequestVariable<T> getRequestVariable(HystrixRequestVariableLifecycle<T> rv) {
+		return existingConcurrencyStrategy != null ? existingConcurrencyStrategy.getRequestVariable(rv)
+				: super.getRequestVariable(rv);
+	}
+
+	@Override
+	public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey, HystrixProperty<Integer> corePoolSize,
+			HystrixProperty<Integer> maximumPoolSize, HystrixProperty<Integer> keepAliveTime, TimeUnit unit,
+			BlockingQueue<Runnable> workQueue) {
+		return existingConcurrencyStrategy != null
+				? existingConcurrencyStrategy.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize, keepAliveTime,
+						unit, workQueue)
+				: super.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+	}
+
+	@Override
+	public <T> Callable<T> wrapCallable(Callable<T> callable) {
+
+		return existingConcurrencyStrategy != null
+				? existingConcurrencyStrategy
+						.wrapCallable(new DelegatingUserContextCallable<T>(callable, UserContextHolder.getContext()))
+				: super.wrapCallable(new DelegatingUserContextCallable<T>(callable, UserContextHolder.getContext()));
+	}
+
+}
+```
+
+Next, we define a **Java Callable class** to inject the UserContext into the Hystrix Command. Below is the implementation:
+
+```
+public class DelegatingUserContextCallable<V> implements Callable<V> {
+
+	private final Callable<V> delegate;
+	private UserContext originalUserContext;
+
+	public DelegatingUserContextCallable(Callable<V> delegate, UserContext userContext) {
+		this.delegate = delegate;
+		this.originalUserContext = userContext;
+	}
+
+	public DelegatingUserContextCallable(Callable<V> delegate) {
+		this(delegate, UserContextHolder.getContext());
+	}
+
+	@Override
+	public V call() throws Exception {
+		UserContextHolder.setContext(originalUserContext);
+		try {
+			return delegate.call();
+		} finally {
+			this.originalUserContext = null;
+		}
+	}
+
+	public String toString() {
+		return delegate.toString();
+	}
+
+	public static <V> Callable<V> create(Callable<V> delegate, UserContext userContext) {
+		return new DelegatingUserContextCallable<V>(delegate, userContext);
+	}
+
+}
+
+```
+
+Then, we configure Spring Cloud to use **our custom Hystrix Concurrency Strategy**. Below is the implementation:
+
+```
+@Configuration
+public class ThreadLocalConfiguration {
+
+	@Autowired(required = false)
+	private HystrixConcurrencyStrategy existingConcurrencyStrategy;
+
+	@PostConstruct
+	public void init() {
+		// Keeps references of existing Hystrix plugins.
+		HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance().getEventNotifier();
+		HystrixMetricsPublisher metricsPublisher = HystrixPlugins.getInstance().getMetricsPublisher();
+		HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance().getPropertiesStrategy();
+		HystrixCommandExecutionHook commandExecutionHook = HystrixPlugins.getInstance().getCommandExecutionHook();
+
+		HystrixPlugins.reset();
+
+		// Registers existing plugins excepts the Concurrent Strategy plugin.
+		HystrixPlugins.getInstance()
+				.registerConcurrencyStrategy(new ThreadLocalAwareStrategy(existingConcurrencyStrategy));
+		HystrixPlugins.getInstance().registerEventNotifier(eventNotifier);
+		HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
+		HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
+		HystrixPlugins.getInstance().registerCommandExecutionHook(commandExecutionHook);
+	}
+
+}
+```
+This Spring configuration class basically rebuilds the Hystrix plugin that manages all the different components running within your service.
+
+### Configuring Redis (a distributed key-value store database)
+
+Below are the dependencies needed to enable communication with Redis DB:
+
+```
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.1.0</version>
+			<type>jar</type>
+		</dependency>
+
+```
+
+Next, we add the configuration information needed for *Department* service to talk with Redis DB. Below are the the configuration information:
+
+```
+#Redis
+redis.host=localhost
+redis.port=6379
+```
+The configuration information above are mapped to the class below:
+
+```
+@Getter
+@Setter
+@ConfigurationProperties(prefix="redis")
+public class RedisConfigProperties {
+
+		private String host;
+		private int port;
+}
+```
+
+Then, we construct the database connection to Redis. Below is the implementation:
+
+```
+@Configuration
+@EnableRedisRepositories
+public class RedisConfiguration {
+	
+	@Autowired
+	private RedisConfigProperties redisConfigProperties;
+	
+	@Bean
+	public RedisConfigProperties RedisConfigProperties() {
+		return new RedisConfigProperties();
+	}
+	
+	@Bean
+	public JedisConnectionFactory jedisConnectionFactory() {
+		RedisStandaloneConfiguration redisStandaloneConfig =new RedisStandaloneConfiguration();
+		redisStandaloneConfig.setHostName(redisConfigProperties.getHost());
+		redisStandaloneConfig.setPort(redisConfigProperties.getPort());
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfig);
+		return jedisConnectionFactory;
+	}
+	
+	@Primary
+	@Bean
+	public RedisTemplate<String,Object> redisTemplate() {
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate();
+		redisTemplate.setConnectionFactory(jedisConnectionFactory());
+		return redisTemplate;
+	}
+
+}
+```
+
+After that, we define the Redis repository, like below:
+
+```
+public interface EmployeeCountRedisRepository {
+	
+	void saveEmployeeCount(int departmentId, long employeeCount);
+	
+	void deleteEmployeeCount(int dpeartmentId);
+	
+	long findEmployeeCount(int departmentId);
+
+}
+
+@Repository
+public class EmployeeCountRedisrepositoryImpl implements EmployeeCountRedisRepository {
+	
+	private static final String HASH_NAME="EmployeeCount";
+	
+	private RedisTemplate  redisTemplate;
+	private HashOperations<String, Integer, Long> hashOperations;
+	
+	@Autowired
+	public EmployeeCountRedisrepositoryImpl(RedisTemplate redisTemplate) {
+		this.redisTemplate =redisTemplate;
+	}
+	
+	@PostConstruct
+	private void init() {
+		hashOperations = redisTemplate.opsForHash();
+	}
+
+	@Override
+	public void saveEmployeeCount(int departmentId, long employeeCount) {
+		hashOperations.put(HASH_NAME, departmentId, employeeCount);
+	}
+
+	@Override
+	public void deleteEmployeeCount(int departmentId) {
+		hashOperations.delete(HASH_NAME, departmentId);
+	}
+
+	@Override
+	public long findEmployeeCount(int departmentId) {
+		return hashOperations.get(HASH_NAME, departmentId);
+	}
+
+}
+```
+Finally, we use Redis for saving the **number of employees** returned from invoking the *Employee service*. Below is the modification made to the invocation of *Employee* service:
+
+```
+	@HystrixCommand(fallbackMethod = "countEmployeesByDepartmentIdFallback")
+	public long countEmployeesByDepartmentId(int departmentId) {
+		LOGGER.info("Called countEmployeesByDepartmentId, departmentId: "+departmentId);
+		long employeeCount = employeeCountRedisService.findEmployeeCountFromCache(departmentId);
+		if(employeeCount>-1) {
+			return employeeCount;
+		}
+		ResponseEntity<Long> response = restTemplate.exchange("http://employee/employees/{departmentId}/count", 
+				HttpMethod.GET, null, Long.class, departmentId);
+		employeeCount = response.getBody();
+		if(employeeCount>-1) {
+			employeeCountRedisService.saveEmployeeCountInCache(departmentId, employeeCount);
+		}
+		return response.getBody();
+	}
+```
+
+### Configuring Kafka 
+
+In a synchronous request-response model, tightly coupled services introduce complexity and brittleness. For example, When *Employee* data is updated, the
+*Employee* service either call back into the licensing service endpoint and tells it to invalidate its cache or talks to the *Department* service’s cache directly.
+We will use Kafka to communicate state changes between services. When the *Employee* service communicates state changes, it publishes a message to a queue. The *Department* service monitors the queue for any messages published by the organization service and can invalidate the Redis cache data as needed.
+
+We start writing our message consumer by first adding the dependencies needed to integrate Kafka. Below are the dependencies needed:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+		</dependency>
+```
+
+Next, we add the configuration information for maaping the *Department* service to the a message topic in Kafka, like below:
+
+```
+#Kafka
+spring.cloud.stream.bindings.input.destination=employeeCountChangeTopic
+spring.cloud.stream.bindings.input.content-type= application/json
+#spring.cloud.stream.bindings.input.group=departmentGroup
+spring.cloud.stream.bindings.binder.zkNodes=localhost
+spring.cloud.stream.bindings.binder.brokers=localhost
+```
+The ```spring.cloud.stream.bindings.input.destination``` maps the input channel to the employeeCountChangeTopic queue. The ```spring.cloud.stream.bindings.input.group``` property is used to guarantee process-once semantics for a service. 
+
+Then, we add ```@EnableBinding``` annotation at the bootstrap class of the application, like below:
+
+```
+@SpringBootApplication
+@EnableCircuitBreaker
+@EnableResourceServer
+@EnableBinding(Sink.class)
+public class DepartmentApplication {
+     ...
+}
+```
+
+The ```@EnableBinding``` annotation tells the service to the use the channels defined in the Sink interface to listen for incoming messages.
+
+Below is the class that listen for input channel for messages:
+
+```
+@Component
+public class EmployeeCountSink {
+	
+	@Autowired
+	private EmployeeCountRedisService employeeCountRedisService;
+	
+	@StreamListener(Sink.INPUT)
+	public void employeeChangeSink(EmployeeCountChangeModel change) {
+		long employeeCount = employeeCountRedisService.findEmployeeCountFromCache(change.getDepartmentId());
+		if(change.getAction().equals(EmployeeActionEnum.CREATE.action())) {
+			employeeCount++;
+			employeeCountRedisService.saveEmployeeCountInCache(change.getDepartmentId(), employeeCount);
+		} else if (change.getAction().equals(EmployeeActionEnum.DELETE.action())) {
+			employeeCount--;
+			employeeCountRedisService.saveEmployeeCountInCache(change.getDepartmentId(), employeeCount);		
+		}
+	}
+
+}
+```
+
+The ```@StreamListener``` annotation tells Spring Cloud Stream to execute the ```employeeChangeSink()``` method every time a message is received off the input channel.
+
+### Configuring Swagger for documenting REST endpoints
 
 ## Setup
