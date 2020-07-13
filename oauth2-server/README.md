@@ -6,8 +6,7 @@ processing their request.
 ## Business Case
 
 In microservice, we need to implement security in multiple services. We need an authentication service that will authenticate the user credentials and issue a token.
-Every time the user tries to access a service protected by the authentication service, the authentication service will validate that the OAuth2 token was issued by it 
-and that it hasn’t expired. The authentication service needs to:
+Every time the user tries to access a service protected by the authentication service, the authentication service will validate that the OAuth2 token was issued by it and that it hasn’t expired. The authentication service needs to:
 
 - authenticate users (validate if the user is who they say they are)
 - check their authorities (validate if the user have has permission to do what they are trying to do)
@@ -108,15 +107,16 @@ spring.datasource.username=sa
 spring.datasource.password={cipher}AQApFhvGmUI3R8ekFYlYo0n/TmYAJMuYIqPpE65jRzdQjmjWwgyLMnevmjytmD2krEDIasLMt5UaQwUjA+TiF036Oilny2nHnCJeqkn/ZKpxavyrrmBG9EACBUt/5I7ztZRNQGAfHflB1OM4WamBJ+7aD1MFSjqervyXOzE547DvWsRYH++WF/380jY5oCCLwiPf1QBCDW6qYE6MgmbZYkq4Rk27c0xgMq4NdSJFrUSpd0D9cuG1eKRFS2ZXwUOAGb5ksiJrWAbliaYq0g5MKvbw1YwLXKhnHysdwMyIZ6faWRF2OYuagf40fB1N3T2sp8o9MZo7x1Kxt9mc1CeigYjH6OOK/pfLn6HqLuoKV9ZPNVCpwysBV8b/FBgC+wqHPuk=
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ```
+
 ### Configuring Liquibase for Managing to Manage Database Schema Changes
 
  We have chosen **Liquibase** to manage database schema changes. Below is the dependency needed for including Liquibase:
  
  ```
- 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
+ <dependency>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
+</dependency>
  ```
  
 Below is the configuration information for Liquibase:
@@ -221,15 +221,15 @@ The **02-data-insert.xml** file has the changeset for populating the tables with
 Finally, we add the dependencies needed for creating the OAuth2 authentication service.
 
 ```
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-oauth2</artifactId>
-		</dependency>
+     <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-oauth2</artifactId>
+     </dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-security</artifactId>
-		</dependency>
+     <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-security</artifactId>
+     </dependency>
 
      <dependency>
        <groupId>org.springframework.security.oauth.boot</groupId>
@@ -255,7 +255,7 @@ public class Oauth2ServerApplication {
 
 The ```@EnableAuthorizationServer``` annotation tells Spring Cloud that this service will be used as an OAuth2 authentication service and to add several REST-based endpoints that will be used in the OAuth2 authentication and authorization processes. The ```@EnableResourceServer``` annotation tells Spring Cloud and Spring Security that the service is a protected resource. As a result, all incoming calls to the service are intercepted by a filter to check if a valid access token is present in the incoming call's HTTP header.
 
-We have added an endpoint ```/user``` (which maps to ```/auth/user```). Below is the implementation of the endpoint:
+We have added an endpoint ```/user```. Below is the implementation of the endpoint:
 
 ```
 @RestController
