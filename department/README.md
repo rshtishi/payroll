@@ -41,7 +41,7 @@ The service need to:
 
 ## Implemenations Details
 
-### Configuring communication with *Configuration Server*
+### Configuring Communication With *Configuration Server*
 
 The configuration information for *Depertment* service is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* 
 for retrieving *Depertment* service  configuration information:
@@ -63,7 +63,7 @@ spring.profiles.active=default
 cloud.config.uri=http://localhost:8888
 ```
 
-### Configuring communication with *Eureka Server*
+### Configuring Communication With *Eureka Server*
 
 Second, we need to register *Depertment* service to service discovery. The first thing to be done is adding the Spring Eureka Client dependency to the 
 *Depertment* service’s pom.xml file like below:
@@ -88,7 +88,7 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 
 Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname. The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the *Depertment* service to register itself with Eureka, and the ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the *Depertment* service will re-contact the Eureka Server service for any changes to the registry. The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of Eureka Server services that the Gateway Server will use to resolve to service locations.
 
-### Configuring communication with the *database*
+### Configuring Communication With the *Database*
 
 Next, we add the dependencies needed for the *Depertment* service to communicate with the database. Below are the dependencies:
 
@@ -117,7 +117,7 @@ spring.datasource.password={cipher}AQApFhvGmUI3R8ekFYlYo0n/TmYAJMuYIqPpE65jRzdQj
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ```
 
-### Configuring Liquibase for managing to manage database schema changes
+### Configuring Liquibase to Manage Database Schema Changes
 
 We have chosen **Liquibase** to manage database schema changes. Below is the dependency needed for including Liquibase:
 
@@ -220,7 +220,7 @@ The **03-alter-departments.xml** file has the changeset that modifies department
 </databaseChangeLog>
 ```
 
-### Configuring the security
+### Configuring the Security
 
 The *Department* service is a **protected resource**. We need to ensure that only authenticated users who have the proper authorization can access it. Below are 
 the dependencies for implementing security:
@@ -262,7 +262,7 @@ public class DepartmentApplication {
 }
 ```
 
-### Configuring distributed logging
+### Configuring Distributed Logging
 
 Below we have added Spring Cloud Sleuth and Zipkin in our *Department* service:
 
@@ -322,7 +322,7 @@ spring.zipkin.baseUrl=http://localhost:9411
 ```
 Zipkin helps us to visualize complex transaction.
 
-### Configuring the mechanism for invoking services
+### Configuring the Mechanism for Invoking Services
 
 We’re going to see an example of how to use a ```RestTemplate``` that’s Ribbon-aware. Below we have declared the bean that is going to be used for invoking other
 services:
@@ -359,7 +359,7 @@ public class EmployeeRestTemplate {
 ```
 The Ribbon-enabled RestTemplate will parse the URL passed into it and use whatever is passed in as the server name as the key to query Ribbon for an instance of a service. The actual service location and port are completely abstracted from the developer.
 
-### Configuring client-side resiliency patterns
+### Configuring Client-Side Resiliency Patterns
 
 Client resiliency software patterns are focused on protecting a remote resource’s(another microservice call or database lookup) client from crashing when the remote
 the resource is failing because that remote service is throwing errors or performing poorly. We are going to use hystrix for implementing this patterns.
@@ -506,7 +506,7 @@ Below we add the ```UserContextInterceptor``` to the RestTemplate:
 ```
 
 
-### Propagating the parent thread’s context to threads managed by a Hystrix command
+### Propagating the Parent Thread’s Context to Threads Managed by a Hystrix Command
 
 Hystrix, by default, will not propagate the parent thread’s context to threads managed by a Hystrix command. Any values set as **ThreadLocal** values in the parent thread will not be available by default to a method called by the parent thread and protected by the ```@HystrixCommand``` annotation. 
 
@@ -631,7 +631,7 @@ public class ThreadLocalConfiguration {
 ```
 This Spring configuration class basically rebuilds the Hystrix plugin that manages all the different components running within your service.
 
-### Configuring Redis (a distributed key-value store database)
+### Configuring Redis (A Distributed Key-Value Store Database)
 
 Below are the dependencies needed to enable communication with Redis DB:
 
@@ -845,7 +845,7 @@ public class EmployeeCountSink {
 
 The ```@StreamListener``` annotation tells Spring Cloud Stream to execute the ```employeeChangeSink()``` method every time a message is received off the input channel.
 
-### Configuring Swagger for documenting REST endpoints
+### Configuring Swagger for Documenting Rest Endpoints
 
 We begin by adding the following dependency:
 
@@ -883,6 +883,15 @@ Out of the box, Spring Boot will automatically serve any static content residing
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
       onComplete: function(swaggerApi, swaggerUi){
         log("Loaded SwaggerUI");
+```
+
+In the end, we configure the security to allow access to Swagger-UI documentation without the need for authentication. Below it is the code:
+```
+	@Override
+	public void configure(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.authorizeRequests().antMatchers("/static/**", "/v2/api-docs", "/configuration/**", "/swagger*/**",
+				"/webjars/**", "/api-docs/**").permitAll().anyRequest().authenticated();
+	}
 ```
 
 ## Setup
