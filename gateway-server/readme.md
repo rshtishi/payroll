@@ -36,6 +36,8 @@ The architecture of Gateway Server is like below:
 
 ## Implementation Details
 
+### Configuring Communication With *Configuration Server*
+
 The configuration information for *Gateway Server* is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* 
 for retrieving *Gateway Server* configuration information:
 
@@ -58,8 +60,9 @@ cloud.config.uri=http://localhost:8888
 zuul.sensitiveHeaders=Cookie, Set-Cookie
 ```
 
-
 ```zuul.sensitiveHeaders=Cookie, Set-Cookie``` allows the *Gateway Server* to forward the cookies to the services.
+
+### Configuring Communication With *Eureka Server*
 
 Next, we need to register *Gateway Server* to service discovery. The first thing to be done is adding the Spring Eureka Client dependency to the *Gateway Server* 
 service’s pom.xml file like below:
@@ -92,7 +95,9 @@ will re-contact the *Eureka Server* service for any changes to the registry.
 The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of *Eureka Server* services that the *Gateway Server*
 will use to resolve to service locations.
 
-Now, we are going to set up the *Gateway Server* by using the Netflix Zuul. First, we add the maven dependency in the *Gateway Server* pom.xml file. Below is the
+### Configuring the *Gateway Server*
+
+Now, we are going to set up the *Gateway Server* by using the **Netflix Zuul**. First, we add the maven dependency in the *Gateway Server* pom.xml file. Below is the
 dependency we added:
 
 ```
@@ -143,6 +148,8 @@ remove instances of a service without ever having to modify Zuul.
 
 The property ```zuul.prefix``` add a the payroll prefix to paths. We have configured the Spring Boot Actuator to expose all endpoints with the property 
 ```management.endpoints.web.exposure.include``` and disabled security by using the property ```management.security.enabled```.
+
+### Configuring Distributed Logging
 
 A **correlation ID** is a randomly generated, unique number or string that’s assigned to a transaction when a transaction is initiated. As the transaction flows across multiple services, the correlation ID is propagated from one service call to another. We are using Spring Cloud Sleuth to:
 - create and inject a correlation ID into your service calls if one doesn’t exist
