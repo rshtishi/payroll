@@ -34,6 +34,8 @@ The service discovery conceptual architecture is like below:
 
 ## Implementation Details
 
+### Configuring Communication With *Configuration Server*
+
 The configuration information for *Eureka Server* is located outside the service code. Below is the dependency needed to communicate with *Configuration Server* for retrieving *eureka server* configuration information:
 
 ```
@@ -50,6 +52,8 @@ spring.application.name=eureka
 spring.profiles.active=default
 cloud.config.uri=http://localhost:8888
 ```
+
+### Configuring  the *Eureka Server*
 
 Setting up the *Eureka Server* service starts by adding the following dependency:
 
