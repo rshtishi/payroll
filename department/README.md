@@ -86,7 +86,7 @@ eureka.client.fetchRegistry=true
 eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 ```
 
-Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname. The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the *Depertment* service to register itself with Eureka, and the ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the *Depertment* service will re-contact the Eureka Server service for any changes to the registry. The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of Eureka Server services that the Gateway Server will use to resolve to service locations.
+Every service registered with Eureka will have two components associated with it: the application ID and the instance ID.The application ID is used to represent a group service instance. In a Spring-Boot-based microservice, the application ID will always be the value set by the ```spring.application.name property```. The ```eureka.instance.preferIpAddress``` property tells Eureka that you want to register the service’s IP address to Eureka rather than its hostname. The ```eureka.client.registerWithEureka``` attribute is the trigger to tell the *Depertment* service to register itself with Eureka, and the ```eureka.client.fetchRegistry``` attribute is used to tell the Spring Eureka Client to fetch a local copy of the registry. Every 30 seconds, the *Depertment* service will re-contact the Eureka Server service for any changes to the registry. The last attribute, the ```eureka.serviceUrl.defaultZone``` attribute, holds a comma-separated list of *Eureka Server* services that the *Employee* service will use to resolve to service locations.
 
 ### Configuring Communication With the *Database*
 
@@ -160,7 +160,7 @@ Below is the content of **liquibase-changelog.xml**:
 
 As we can see above, we have grouped the changeset in three files that are included in liquibase-changelog.xml.
 
-The **01-create-scheme.xml** file has the changeset for creating the schema of the database, as we can see below:
+The **01-create-department-scheme.xml** file has the changeset for creating the schema of the database, as we can see below:
 
 ```
 <databaseChangeLog
@@ -183,7 +183,7 @@ The **01-create-scheme.xml** file has the changeset for creating the schema of t
 </databaseChangeLog>
 ```
 
-The **02-data-insert.xml** file has the changeset for populating the tables with information. Below is the content of the file:
+The **02-data-insert-departments.xml** file has the changeset for populating the tables with information. Below is the content of the file:
 
 ```
 <databaseChangeLog
@@ -314,7 +314,8 @@ Below are the Logback configuration file for pushing the logs file to the centra
 
 </configuration>
 ```
-Below we have configured Gateway Server to communicate with Zipkin:
+
+Below we have configured *Department* service to communicate with Zipkin:
 
 ```
 #Zipkin
