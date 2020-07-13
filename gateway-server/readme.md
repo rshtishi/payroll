@@ -261,6 +261,8 @@ spring.zipkin.baseUrl=http://localhost:9411
 ```
 Zipkin helps us to visualize complex transaction.
 
+### Securing the Communication With *Gateway Server*
+
 The Zuul **Gateway Server** is the only service that will be open for the public. Here will be directed all requests for accessing the services. For security reasons,
 we are going to encrypt the traffic between the *Gateway Server* and the client.  We are going to use the https protocol. We created a self-signed certificate and
 then added the configuration below:
