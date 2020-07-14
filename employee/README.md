@@ -361,4 +361,62 @@ Zipkin helps us to visualize complex transaction.
 
 ### Configuring Kafka 
 
+We are using Kafka to notify the *Department* service, every time that the *Employee* service data is added or deleted. The *Employee* service will publish and message to a Kafka topic indicating that an event has occurred.
+
+Below are the dependencies needed to start implementing our message producer:
+
+```
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+		</dependency>
+```
+
+Next, we add the configuration information for publishing a message, like below:
+
+```
+#Kafka
+spring.cloud.stream.bindings.output.destination=employeeCountChangeTopic
+spring.cloud.stream.bindings.output.content-type= application/json
+```
+The configuration property ```spring.stream.bindings.output```  maps the ```source.output()``` channel to the employeeCountChangeTopic on the message
+broker you’re going to communicate with. The ```spring.cloud.stream.bindings.output.content-type``` tells Spring Cloud Stream that messages being sent to this topic should be serialized as JSON.
+
+Then , we need to tell your application that it’s going to bind to a Spring Cloud Stream message broker. We do this by annotating the organization service’s bootstrap class with an ```@EnableBinding annotation``` annotation, as you can see below:
+
+```
+@SpringBootApplication
+@EnableResourceServer
+@EnableBinding(Source.class)
+public class EmployeeApplication {
+  ...
+}
+```
+
+Below is the implementation of publish an image to the message broker:
+
+```
+@Component
+public class EmployeeSource {
+
+	@Autowired
+	private Source source;
+
+	public void publishEmployeeCountChange(int departmentId, String action) {
+		EmployeeCountChangeModel change = new EmployeeCountChangeModel(departmentId, action,
+				EmployeeCountChangeModel.class.getTypeName());
+		source.output().send(MessageBuilder.withPayload(change).build());
+	}
+
+}
+```
+
+The Source interface is a convenient interface to use when your service only needs to publish to a single channel. The output() method returns a class of type ```MessageChannel```. The **MessageChannel** is how you’ll send messages to the message broker.
+
+
 ## Setup
