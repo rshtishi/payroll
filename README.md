@@ -55,32 +55,64 @@ In a distributed architecture like a microservices one, you need to implement th
 
 In this example of microservice architecture, we have used the **OAUTH2** specification for securing our services. OAuth2 is a token-based security framework that allows a user to authenticate themselves with a third-party authentication server. If the user successfully authenticates, they will be presented with a token that must be sent with every request. The token can then be validated back to the *OAuth2 Server*. The *OAuth2 Server* is the intermediary between the application and the services being consumed. The *OAuth2 Server* allows the user to authenticate themselves without having to pass their user credentials down to every service the application is going to call on behalf of the user. In the link below you can find more detailed information about:
 
-[OAuth2 Server Service](https://github.com/rshtishi/payroll/tree/master/oauth2-server)
+[OAuth2 Server Service](https://github.com/rshtishi/payroll/blob/master/oauth2-server/README.md)
 
 
 ### Employee 
 
 *Employee* service implements the business logic for managing employees. The configuration information for *Employee* is accessed through *Configuration Server*. Whenever a new instance of the *Employee* service is started it automatically registers itself in *Eureka Server*. Thus making the service discoverable by other applications. *Employee* service is a protected resource. A user needs to include in authentication HTTP header containing **OAUTH2 access token** to access the service. To enable distributed tracing we have used spring cloud sleuth to link together transactions across multiple services. We have used Zipkin to understand the flow of transactions. We have used Zipkin for visualization of the flow of a transaction across multiple services.
 
-[Employee Service](https://github.com/rshtishi/payroll/tree/master/employee)
+[Employee Service](https://github.com/rshtishi/payroll/blob/master/employee/README.md)
 
 ### Department
 
-*Department* service implements the business logic for managing the departments. It implements the same technology as the employee service for separation of configuration from service code, service discovery, security, and distributed tracing. Department Service makes calls to *Employee* service to retrieve the number of employees for each department. We have used client resiliency software patterns (circuit breakers, fallbacks, and bulkheads) on protecting department service from crashing because the employee service is throwing an error or behaving poorly. We have used **Redis** to cache the number of employees returned from *Employee* service. Also, we have implemented event-driven architecture with *Kafka*. Every time a new employee is created or deleted in employee service it publishes a message to the queue. Department service monitors the queue for any messages published and updates the cache for each message published from *Employee* service.
+*Department* service implements the business logic for managing the departments. It implements the same technology as the employee service for separation of configuration from service code, service discovery, security, and distributed tracing. Department Service makes calls to *Employee* service to retrieve the number of employees for each department. We have used client resiliency software patterns (circuit breakers, fallbacks, and bulkheads) on protecting department service from crashing because the employee service is throwing an error or behaving poorly. We have used **Redis** to cache the number of employees returned from *Employee* service. Also, we have implemented event-driven architecture with **Kafka**. Every time a new employee is created or deleted in employee service it publishes a message to the queue. Department service monitors the queue for any messages published and updates the cache for each message published from *Employee* service.
 
-[Department Service](https://github.com/rshtishi/payroll/tree/master/department)
+[Department Service](https://github.com/rshtishi/payroll/blob/master/department/README.md)
 
 ## Setup
 
 Prerequisite needed before setup:
 
-- Elasticsearch [version: 7.6.2]
-- Logstash [version: 7.6.2]
-- Kibana [version: 7.6.2]
-- Redis [version: 2.4.5]
-- Kafka [version:]
-- Zipkin Server [version: 2.21.1]
+- Elasticsearch [version: 7.6.2] should be started and running
+- Logstash [version: 7.6.2] should be started and running
+- Kibana [version: 7.6.2] should be started and running
+- Redis [version: 2.4.5] should be started and running
+- Kafka [version:] should be started and running
+- Zipkin Server [version: 2.21.1] should be started and running
 
+Build the project:
+
+-```mvn clean install``` (execute the command in payroll directory)
+
+Start the applications as below:
+
+- Configuration Server - ```mvn spring-boot:run``` (execute the command in **config-server directory** to start the Configuration Server)
+- Eureka Server - ```mvn spring-boot:run```  (execute the command in **eureka-server directory** to start the Eureka Server)
+- Gateway Server - ```mvn spring-boot:run``` (execute the command in **gateway-server directory** to start Gateway Server)
+- OAuth2 Server - ```mvn spring-boot:run```  (execute the command in **oauth2-server directory** to start OAuth2 Server)
+- Employee - ```mvn spring-boot:run``` (execute the command in **employee directory** to start Employee Service)
+- Department - ```mvn spring-boot:run``` (execute the command in **department directory** to start Department Service)
+
+To access configuration information for a specific service:
+
+**Link:** http://localhost:8888/{service}/{environment}
+
+**Example:** ```localhost:8888/employee/default``` [Http method: GET] (retrieving the configuration information for the employee service)
+
+To see the information about service instances that are up and where are they deployed:
+
+**Link:** http://localhost:8761/eureka/apps
+
+To access the routes mapped in Gateway Server:
+
+**Link:** https://localhost:5555/actuator/routes [Http method: GET] (retrieves the routing information)
+
+To authenticate with postman:
+
+- **url:** http://localhost:8901/oauth/token [Http Method: POST]
+- **Authentication Type:** Basic [username:payroll, password: test]
+- **Body:** Form Data [grant_type:password, scope:webclient, username:rando, password:test]
 
 
 
