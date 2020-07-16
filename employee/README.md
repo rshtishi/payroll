@@ -34,6 +34,10 @@ The service need to:
 
 ## Architecture
 
+The architecture featuring *Employee* service in the center:
+
+![Employee Service Architecture](https://github.com/rshtishi/payroll/blob/master/employee/src/main/resources/static/images/employee-service-architecture.jpeg)
+
 ## Implemenations Details
 
 ### Configuring Communication With Configuration Server
