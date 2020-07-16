@@ -38,6 +38,9 @@ The service need to:
 
 ## Architecture
 
+The architecture featuring *Department* service in center is like below:
+
+![Department-Service-Architecture](https://github.com/rshtishi/payroll/blob/master/department/src/main/resources/static/images/department-service-architecture.jpeg)
 
 ## Implemenations Details
 
