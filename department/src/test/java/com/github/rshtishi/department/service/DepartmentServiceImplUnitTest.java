@@ -78,7 +78,7 @@ class DepartmentServiceImplUnitTest {
 		//setup
 		when(departmentRepository.save(Mockito.any())).thenReturn(department);
 		//execute
-		Department departmentActual = departmentService.createEmployee(department);
+		Department departmentActual = departmentService.createDepartment(department);
 		//verify
 		Assertions.assertEquals(department.getId(), departmentActual.getId());
 		Assertions.assertEquals(department.getName(), departmentActual.getName());
@@ -89,7 +89,7 @@ class DepartmentServiceImplUnitTest {
 		//setup
 		when(departmentRepository.save(Mockito.any())).thenReturn(department);
 		//execute
-		Department departmentActual = departmentService.updateEmployee(department);
+		Department departmentActual = departmentService.updateDepartment(department);
 		//verify
 		Assertions.assertEquals(department.getId(), departmentActual.getId());
 		Assertions.assertEquals(department.getName(), departmentActual.getName());
@@ -101,7 +101,7 @@ class DepartmentServiceImplUnitTest {
 		int id = 1;
 		doNothing().when(departmentRepository).deleteById(Mockito.anyInt());
 		// execute
-		departmentService.deleteEmployee(id);
+		departmentService.deleteDepartment(id);
 		// verify
 		verify(departmentRepository, times(1)).deleteById(id);
 	}

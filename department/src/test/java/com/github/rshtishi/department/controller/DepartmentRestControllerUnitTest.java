@@ -91,7 +91,7 @@ public class DepartmentRestControllerUnitTest {
 	@Test
 	public void testCreate() throws Exception {
 		// setup
-		when(departmentService.createEmployee(Mockito.any())).thenReturn(department);
+		when(departmentService.createDepartment(Mockito.any())).thenReturn(department);
 		String payload = new ObjectMapper().writeValueAsString(department);
 		// execute
 		ResultActions result = mockMvc
@@ -110,7 +110,7 @@ public class DepartmentRestControllerUnitTest {
 	public void testUpdate() throws Exception {
 		// setup
 		when(departmentHelper.verifyDeparmentExistence(Mockito.any(), Mockito.anyInt())).thenReturn(department);
-		when(departmentService.updateEmployee(Mockito.any(Department.class))).thenReturn(department);
+		when(departmentService.updateDepartment(Mockito.any(Department.class))).thenReturn(department);
 		String payload = new ObjectMapper().writeValueAsString(department);
 		// execute
 		ResultActions result = mockMvc
@@ -126,11 +126,11 @@ public class DepartmentRestControllerUnitTest {
 	public void testDelete() throws Exception {
 		//setup
 		when(departmentHelper.verifyDeparmentExistence(Mockito.any(), Mockito.anyInt())).thenReturn(department);
-		doNothing().when(departmentService).deleteEmployee(Mockito.anyInt());
+		doNothing().when(departmentService).deleteDepartment(Mockito.anyInt());
 		//execute
 		ResultActions result = mockMvc.perform(delete("/departments/1"));
 		//verify
-		verify(departmentService,times(1)).deleteEmployee(1);
+		verify(departmentService,times(1)).deleteDepartment(1);
 		result.andExpect(status().isOk());
 	}
 }

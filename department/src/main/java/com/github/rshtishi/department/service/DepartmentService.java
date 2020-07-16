@@ -11,10 +11,10 @@ public interface DepartmentService {
 	
 	public Department findById(int id);
 	
-	public Department createEmployee(Department department);
+	public Department createDepartment(Department department);
 	
-	public Department updateEmployee(Department department);
+	public Department updateDepartment(Department department);
 	
-	public void deleteEmployee(int id);
+	public void deleteDepartment(int id);
 
 }

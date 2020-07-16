@@ -52,19 +52,19 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
-	public Department createEmployee(Department department) {
+	public Department createDepartment(Department department) {
 		LOGGER.info("createEmployee method called, department: " + department);
 		return departmentRepository.save(department);
 	}
 
 	@Override
-	public Department updateEmployee(Department department) {
+	public Department updateDepartment(Department department) {
 		LOGGER.info("updateEmployee method called, department: " + department);
 		return departmentRepository.save(department);
 	}
 
 	@Override
-	public void deleteEmployee(int id) {
+	public void deleteDepartment(int id) {
 		LOGGER.info("deleteEmployee called, id: " + id);
 		departmentRepository.deleteById(id);
 	}

@@ -53,7 +53,7 @@ public class DepartmentRestController {
 	@PostMapping
 	@ApiOperation(value = "Create a new Department", response = Department.class, notes = "The newly created department id will be sent in the location response header")
 	public ResponseEntity<Department> create(@Valid @RequestBody Department department) {
-		department = departmentService.createEmployee(department);
+		department = departmentService.createDepartment(department);
 		HttpHeaders responseHttpHeaders = new HttpHeaders();
 		URI newDepartmentUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(department.getId()).toUri();
@@ -66,7 +66,7 @@ public class DepartmentRestController {
 	public ResponseEntity<Department> update(@Valid @RequestBody Department department, @PathVariable int id) {
 		departmentHelper.verifyDeparmentExistence(departmentService, id);
 		department.setId(id);
-		department = departmentService.updateEmployee(department);
+		department = departmentService.updateDepartment(department);
 		return new ResponseEntity<>(department, HttpStatus.OK);
 	}
 
@@ -74,7 +74,7 @@ public class DepartmentRestController {
 	@ApiOperation(value = "Deletes department associated with departmentId")
 	public ResponseEntity<?> delete(@PathVariable Integer id) {
 		departmentHelper.verifyDeparmentExistence(departmentService, id);
-		departmentService.deleteEmployee(id);
+		departmentService.deleteDepartment(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
