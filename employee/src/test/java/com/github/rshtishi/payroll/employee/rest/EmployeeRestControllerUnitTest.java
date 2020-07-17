@@ -3,9 +3,14 @@ package com.github.rshtishi.payroll.employee.rest;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -110,8 +116,35 @@ public class EmployeeRestControllerUnitTest {
 		// verify
 		result.andExpect(status().isCreated());
 		result.andExpect(header().string("Location", "http://localhost/employees/1"));
-		result.andExpect(jsonPath("$.id",is(1)));
-		result.andExpect(jsonPath("$.firstname",is("Rando")));
+		result.andExpect(jsonPath("$.id", is(1)));
+		result.andExpect(jsonPath("$.firstname", is("Rando")));
+	}
+
+	@Test
+	public void testUpdate() throws Exception {
+		// setup
+		when(employeeHelper.verifyEmployeeExistance(any(), anyInt())).thenReturn(employee);
+		when(employeeService.updateEmployee(employee)).thenReturn(employee);
+		String payload = new ObjectMapper().writeValueAsString(employee);
+		// execute
+		ResultActions result = mockMvc
+				.perform(put("/employees/1").contentType(MediaType.APPLICATION_JSON).content(payload));
+		// verify
+		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$.id", is(1)));
+		result.andExpect(jsonPath("$.firstname", is("Rando")));
+	}
+	
+	@Test
+	public void testDelete() throws Exception {
+		//setup
+		when(employeeHelper.verifyEmployeeExistance(any(), anyInt())).thenReturn(employee);
+		doNothing().when(employeeService).deleteEmployee(Mockito.anyInt());
+		//execute
+		ResultActions result = mockMvc.perform(delete("/employees/1"));
+		//verify
+		verify(employeeService,times(1)).deleteEmployee(1);
+		result.andExpect(status().isOk());
 	}
 
 }
