@@ -22,6 +22,13 @@ Payroll is using the following technologies:
 - Spring Cloud Zipkin (for visualizing the tracing of transaction)
 
 
+## Architecture
+
+Below is the overall representation of payroll architecture:
+
+![Payroll-Architecture](https://github.com/rshtishi/payroll/blob/master/static/images/payroll-architecture.jpeg)
+
+
 ## Services
 
 Payroll is composed of services:
