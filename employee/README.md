@@ -424,3 +424,28 @@ The Source interface is a convenient interface to use when your service only nee
 
 
 ## Setup
+
+Prerequisite needed before setup:
+
+- Zipkin should be started and running
+
+- Kafka should be started and running
+
+- Redis should be started and running
+
+- Git
+
+- GitHub
+
+- Configuration Server should be started and running
+
+- Eureka Server should be started and running
+
+- Gateway Server should be started and running
+
+- OAuth2 Server shhould be started and running
+
+Execute the following commands:
+
+- ```mvn clean install``` (to build the project)
+- ```mvn spring-boot:run``` (to run the project)
