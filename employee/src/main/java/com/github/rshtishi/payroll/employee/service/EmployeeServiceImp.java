@@ -1,5 +1,7 @@
 package com.github.rshtishi.payroll.employee.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,12 @@ public class EmployeeServiceImp implements EmployeeService {
 	@Override
 	public Employee findById(int id) {
 		LOGGER.info("findById called, id: " + id);
-		return employeeRepository.findById(id).get();
+		Employee employee = null;
+		Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+		if (optionalEmployee.isPresent()) {
+			employee = optionalEmployee.get();
+		}
+		return employee;
 	}
 
 	@Override
