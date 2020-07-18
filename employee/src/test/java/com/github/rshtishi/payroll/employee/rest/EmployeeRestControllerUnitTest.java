@@ -62,6 +62,7 @@ public class EmployeeRestControllerUnitTest {
 		employee = new Employee();
 		employee.setId(1);
 		employee.setFirstname("Rando");
+		employee.setLastname("Shtishi");
 		employee.setDepartmentId(1);
 	}
 

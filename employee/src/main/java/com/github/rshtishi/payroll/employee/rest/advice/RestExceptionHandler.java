@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.github.rshtishi.payroll.employee.entity.ErrorDetail;
 import com.github.rshtishi.payroll.employee.entity.ValidationError;
 import com.github.rshtishi.payroll.employee.exception.ResourceNotFoundException;
+import com.github.rshtishi.payroll.employee.helper.Translator;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
+	
+	@Autowired
+	private Translator translator;
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorDetail> handleResourceNotFoundException(ResourceNotFoundException exception,
@@ -34,8 +39,8 @@ public class RestExceptionHandler {
 		ErrorDetail errorDetail = new ErrorDetail();
 		errorDetail.setTimeStamp(Instant.now().getEpochSecond());
 		errorDetail.setStatus(HttpStatus.NOT_FOUND.value());
-		errorDetail.setTitle("Burimi nuk ekziston");
-		errorDetail.setDetail("Departamenti nuk ekziston");
+		errorDetail.setTitle(translator.toLocale("error.resourceNotFound"));
+		errorDetail.setDetail(translator.toLocale("error.departmentNotFound"));
 		errorDetail.setDeveloperMessage(exception.getClass().getName());
 		return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
 	}
@@ -46,8 +51,8 @@ public class RestExceptionHandler {
 		ErrorDetail errorDetail = new ErrorDetail();
 		errorDetail.setTimeStamp(Instant.now().getEpochSecond());
 		errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-		errorDetail.setTitle("Kontrolli deshtoi");
-		errorDetail.setDetail("Kontrolli i dhenave hyrese deshtoi");
+		errorDetail.setTitle(translator.toLocale("error.validationFailed"));
+		errorDetail.setDetail(translator.toLocale("error.inputValidationFailed"));
 		errorDetail.setDeveloperMessage(exception.getClass().getName());
 		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 		for(FieldError fe: fieldErrors) {
