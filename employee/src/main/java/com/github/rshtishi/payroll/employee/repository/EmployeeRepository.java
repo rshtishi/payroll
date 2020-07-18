@@ -12,7 +12,6 @@ import com.github.rshtishi.payroll.employee.entity.Employee;
 @Repository
 public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
 
-	public List<Employee> findAll();
 	
 	public Page<Employee> findAll(Pageable pageable);
 	
