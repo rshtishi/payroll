@@ -1,4 +1,4 @@
-package com.github.rshtishi.department.configuration;
+package com.github.rshtishi.payroll.employee.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -13,6 +13,5 @@ public class MvcConfiguration implements WebMvcConfigurer {
                 .addResourceHandler("/resources/**")
                 .addResourceLocations("/resources/");
     }
-    
 
 }

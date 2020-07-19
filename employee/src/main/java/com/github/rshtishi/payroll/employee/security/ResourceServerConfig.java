@@ -18,9 +18,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().anyRequest().authenticated();
+		httpSecurity.authorizeRequests().antMatchers("/static/**", "/v2/api-docs", "/configuration/**", "/swagger*/**",
+				"/webjars/**", "/api-docs/**").permitAll().anyRequest().authenticated();
 	}
-
+	
 	@Override
 	public void configure(final ResourceServerSecurityConfigurer resources) {
 		resources.tokenStore(tokenStore).tokenServices(defaultTokenServices);
