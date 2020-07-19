@@ -77,6 +77,10 @@ In this example of microservice architecture, we have used the **OAUTH2** specif
 
 [Department Service](https://github.com/rshtishi/payroll/blob/master/department/README.md)
 
+## ELK 
+
+We are going to use Elasticsearch, Logstash, Kibana (ELK) to aggregate logs from different services. Elasticsearch is the repository where the logs will be stored from multiple services. All services place all the log files in a central directory. We use logstash to send the logs to elasticsearch. Finally, we use kibana interface for visualization Elasticsearch data and navigating through information.
+
 ## Setup
 
 Prerequisite needed before setup:
@@ -121,6 +125,12 @@ To authenticate with postman:
 - **Authentication Type:** Basic [username:payroll, password: test]
 - **Body:** Form Data [grant_type:password, scope:webclient, username:rando, password:test]
 
+Access information about department endpoints:
 
+- ```http://localhost:8081/swagger-ui/index.html``` [Http method: GET] (rest api documentation)
+
+Access information employee endpoints:
+
+- ```http://localhost:8082/swagger-ui/index.html``` [Http method: GET] (rest api documentation)
 
 
