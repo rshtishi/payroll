@@ -904,6 +904,7 @@ Prerequisite needed before setup:
 
 - Zipkin should be started and running
 - Kafka should be started and running
+- A topic named ```employeeCountChangeTopic``` should be created 
 - Redis should be started and running
 
 - Git
@@ -918,3 +919,12 @@ Execute the following commands:
 
 - ```mvn clean install``` (to build the project)
 - ```mvn spring-boot:run``` (to run the project)
+
+Access information about employee endpoints:
+
+- ```http://localhost:8081/swagger-ui/index.html``` [Http method: GET] (rest api documentation)
+
+
+
+
+
