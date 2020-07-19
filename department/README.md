@@ -920,7 +920,7 @@ Execute the following commands:
 - ```mvn clean install``` (to build the project)
 - ```mvn spring-boot:run``` (to run the project)
 
-Access information about employee endpoints:
+Access information about department endpoints:
 
 - ```http://localhost:8081/swagger-ui/index.html``` [Http method: GET] (rest api documentation)
 
