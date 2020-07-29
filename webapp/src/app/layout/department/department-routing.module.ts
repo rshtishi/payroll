@@ -5,7 +5,7 @@ import { DepartmentComponent } from './department/department.component';
 
 const routes:Routes=[
   {
-    path:'department',
+    path:'',
     component:DepartmentComponent
   }
 ]
