@@ -28,6 +28,7 @@
 		<module>oauth2-server</module>
 		<module>employee</module>
 		<module>department</module>
+		<module>webapp</module>
 	</modules>
 
 	<build>
