@@ -7,6 +7,8 @@ import { LoginModule } from './login/login.module';
 import { AccessDeniedModule } from './access-denied/access-denied.module';
 import { NotFoundModule } from './not-found/not-found.module';
 import { LayoutModule } from './layout/layout.module';
+import { AuthService } from './shared/service/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,9 +20,10 @@ import { LayoutModule } from './layout/layout.module';
     LoginModule,
     AccessDeniedModule,
     NotFoundModule,
-    LayoutModule
+    LayoutModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,26 +1,26 @@
 <div class="login-page">
-    <div class="row justify-content-md-center">
-      <div class="col-md-4">
-        <img src="assets/images/logo.png" width="150px" class="user-avatar" />
-        <h1>{{ appName }} - Login</h1>
-        <form role="form">
-          <div class="form-content">
-            <div class="form-group">
-              <input class="form-control input-underline input-lg" id="login" autofocus="autofocus" placeholder="username"
-                required="required" name="username" [(ngModel)]="loggingUser.username" type="text">
-            </div>
-            <div class="form-group">
-              <input class="form-control input-underline input-lg" id="password" placeholder="password"
-                required="required" name="password" [(ngModel)]="loggingUser.password" type="password">
-            </div>
-  
-            <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-4">
+      <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+      <h1>{{ appName }} - Login</h1>
+      <form role="form">
+        <div class="form-content">
+          <div class="form-group">
+            <input class="form-control input-underline input-lg" id="login" autofocus="autofocus" placeholder="username"
+              required="required" name="username" [(ngModel)]="loggingUser.username" type="text">
           </div>
-  
-          <button type="submit" class="btn btn-outline-primary rounded-btn mr-2" (click)="login()">
-            Login
-          </button>
-        </form>
-      </div>
+          <div class="form-group">
+            <input class="form-control input-underline input-lg" id="password" placeholder="password"
+              required="required" name="password" [(ngModel)]="loggingUser.password" type="password">
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary rounded-btn mr-2" (click)="login()">
+          Login
+        </button>
+      </form>
     </div>
   </div>
+</div>
