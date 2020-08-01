@@ -1,0 +1,71 @@
+.sidebar {
+    position: fixed;
+    z-index: 1000;
+    top: 56px;
+    left: 235px;
+    width: 235px;
+    margin-left: -235px;
+    overflow-y: auto;
+    background-color: #e9ecef;
+    bottom: 0;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+    padding-top: 12px;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    border-left: none;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+}
+
+.sidebar.compressed-sidebar {
+    width: 4rem;
+}
+
+@media screen and (max-width: 992px) {
+    .sidebar {
+        left: 0;
+    }
+    .sidebar.compressed-sidebar {
+        width: 235px;
+    }
+}
+
+:host .navbar {
+    padding-left: 0;
+    height: 56px;
+    background-color: #456191;
+}
+
+:host .navbar .navbar-nav-brend {
+    width: 235px;
+}
+
+:host .navbar .navbar-brand {
+    color: #fff;
+}
+
+:host .search-bar {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    font-size: 1rem;
+}
+
+:host .search-bar .search-box {
+    border-radius: 20px;
+    border: 2px solid #f0ead8;
+}
+
+@media screen and (max-width: 992px) {
+    :host .navbar {
+        padding-left: 1rem;
+    }
+    :host .navbar .navbar-nav-brend {
+        width: auto;
+    }
+    :host .navbar .navbar-brand {
+        padding-left: 0;
+    }
+}

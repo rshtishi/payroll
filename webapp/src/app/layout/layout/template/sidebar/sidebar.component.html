@@ -1,0 +1,12 @@
+<nav class="sidebar">
+    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab"
+            aria-controls="v-pills-dashboard" aria-selected="true" [routerLink]="['/dashboard']">Dashboard</a>
+        <a class="nav-link" id="v-pills-department-tab" data-toggle="pill" href="#v-pills-department" role="tab"
+            aria-controls="v-pills-department" aria-selected="true" [routerLink]="['/department']">Department</a>
+        <a class="nav-link" id="v-pills-employee-tab" data-toggle="pill" href="#v-pills-employee" role="tab"
+            aria-controls="v-pills-employee" aria-selected="true" [routerLink]="['/employee']">Employee</a>
+        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" role="tab" aria-controls="v-pills-profile"
+            aria-selected="false" href="javascript:void(0)" (click)="logout()">Log out</a>
+    </div>
+</nav>

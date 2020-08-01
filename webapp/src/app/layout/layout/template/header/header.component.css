@@ -1,0 +1,32 @@
+:host .navbar {
+    padding-left: 0;
+    height: 56px;
+    background-color: #456191;
+}
+:host .navbar .navbar-nav-brend {
+    width: 235px;
+}
+:host .navbar .navbar-brand {
+    color: #fff;
+}
+:host .search-bar {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    font-size: 1rem;
+}
+:host .search-bar .search-box {
+    border-radius: 20px;
+    border: 2px solid #f0ead8;
+}
+@media screen and (max-width: 992px) {
+    :host .navbar {
+        padding-left: 1rem;
+   }
+    :host .navbar .navbar-nav-brend {
+        width: auto;
+   }
+    :host .navbar .navbar-brand {
+        padding-left: 0;
+   }
+}

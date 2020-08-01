@@ -5,11 +5,13 @@ import { LayoutRoutingModule } from './layout-routing.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { DepartmentModule } from './department/department.module';
 import { EmployeeModule } from './employee/employee.module';
+import { HeaderComponent } from './layout/template/header/header.component';
+import { SidebarComponent } from './layout/template/sidebar/sidebar.component';
 
 
 
 @NgModule({
-  declarations: [LayoutComponent],
+  declarations: [LayoutComponent, HeaderComponent, SidebarComponent],
   imports: [
     CommonModule,
     LayoutRoutingModule,
