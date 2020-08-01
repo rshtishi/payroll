@@ -37,4 +37,9 @@ export class AuthService {
         return (localStorage.getItem(AppSettings.ACCESS_TOKEN)
             && JSON.parse(localStorage.getItem(AppSettings.CURRENT_USER))) ? true:false;
     }
+
+    public logOut(){
+        localStorage.removeItem(AppSettings.ACCESS_TOKEN);
+        localStorage.removeItem(AppSettings.CURRENT_USER);
+    }
 }
