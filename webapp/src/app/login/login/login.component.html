@@ -3,21 +3,25 @@
     <div class="col-md-4">
       <img src="assets/images/logo.png" width="150px" class="user-avatar" />
       <h1>{{ appName }} - Login</h1>
-      <form role="form">
+      <form role="form" #loginForm="ngForm">
         <div class="form-content">
           <div class="form-group">
             <input class="form-control input-underline input-lg" id="login" autofocus="autofocus" placeholder="username"
-              required="required" name="username" [(ngModel)]="loggingUser.username" type="text">
+              required name="username" [(ngModel)]="loggingUser.username" type="text" #username="ngModel">
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="alert alert-danger">
+              <b>Username is required</b>
+            </div>
           </div>
           <div class="form-group">
-            <input class="form-control input-underline input-lg" id="password" placeholder="password"
-              required="required" name="password" [(ngModel)]="loggingUser.password" type="password">
+            <input class="form-control input-underline input-lg" id="password" placeholder="password" required
+              name="password" [(ngModel)]="loggingUser.password" type="password" #password="ngModel">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+              <b>Password is required</b>
+            </div>
           </div>
-
-          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
         </div>
 
-        <button type="submit" class="btn btn-outline-primary rounded-btn mr-2" (click)="login()">
+        <button type="submit" class="btn btn-outline-primary rounded-btn mr-2" (click)="login()" [disabled]="!loginForm.form.valid">
           Login
         </button>
       </form>

@@ -13,7 +13,6 @@ export class LoginComponent implements OnInit {
 
   loggingUser = new LoggingUser();
   appName = "payroll";
-  errorMessage = '';
 
   constructor(    private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -27,7 +26,6 @@ export class LoginComponent implements OnInit {
       localStorage.setItem(AppSettings.ACCESS_TOKEN,response[AppSettings.ACCESS_TOKEN]);
       this.authService.retrieveUser().subscribe(user =>{
         localStorage.setItem(AppSettings.CURRENT_USER,JSON.stringify(user));
-        console.log(this.authService.isAuthenticated());
         if(user){
           this.router.navigate(["/"]);
         }

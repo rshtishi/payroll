@@ -35,6 +35,6 @@ export class AuthService {
 
     public isAuthenticated():boolean {
         return (localStorage.getItem(AppSettings.ACCESS_TOKEN)
-            && JSON.parse(localStorage.getItem(AppSettings.CURRENT_USER)));
+            && JSON.parse(localStorage.getItem(AppSettings.CURRENT_USER))) ? true:false;
     }
 }
