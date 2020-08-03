@@ -10,6 +10,12 @@ import { LayoutModule } from './layout/layout.module';
 import { AuthService } from './shared/service/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import 'hammerjs';
+
+
+
 
 @NgModule({
   declarations: [
@@ -22,7 +28,9 @@ import { AuthGuard } from './shared/guards/auth.guard';
     AccessDeniedModule,
     NotFoundModule,
     LayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    ChartsModule,
+    BrowserAnimationsModule
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
