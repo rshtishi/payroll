@@ -25,12 +25,7 @@ export class AuthService {
     }
 
     public retrieveUser() {
-        let headers = new HttpHeaders();
-        headers = headers.set('Authorization', 'Bearer ' + localStorage.getItem(AppSettings.ACCESS_TOKEN));
-        let httpOptions = {
-            headers: headers
-        };
-        return this.httpClient.get(AppSettings.USER_ENDPOINT, httpOptions);
+        return this.httpClient.get(AppSettings.USER_ENDPOINT);
     }
 
     public isAuthenticated():boolean {
