@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DepartmentService } from '../../../shared/service/department.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,11 +17,12 @@ export class DashboardComponent implements OnInit {
     employee_no: 250
   }];
 
- 
-
-  constructor() { }
+  constructor(private departmentService:DepartmentService) { }
 
   ngOnInit(): void {
+    this.departmentService.fetchAll().subscribe(result=>{
+      console.log(result);
+    });
   }
 
 }
