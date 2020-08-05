@@ -141,4 +141,42 @@
 
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>GenerateTs</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cz.habarta.typescript-generator</groupId>
+						<artifactId>typescript-generator-maven-plugin</artifactId>
+						<version>2.0.400</version>
+						<configuration>
+							<!-- HELP: http://www.habarta.cz/typescript-generator/maven/typescript-generator-maven-plugin/generate-mojo.html -->
+							<jsonLibrary>jackson2</jsonLibrary>
+							<optionalProperties>all</optionalProperties>
+							<optionalPropertiesDeclaration>questionMarkAndNullableType</optionalPropertiesDeclaration>
+							<mapEnum>asEnum</mapEnum>
+							<stringQuotes>singleQuotes</stringQuotes>
+							<classPatterns>
+								<pattern>com.github.rshtishi.department.entity.**</pattern>
+							</classPatterns>
+							<outputKind>module</outputKind>
+							<outputFileType>implementationFile</outputFileType>
+							<outputFile>target/department.model.ts</outputFile>
+						</configuration>
+						<executions>
+							<execution>
+								<id>generate</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<phase>process-classes</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
