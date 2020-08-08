@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentService } from '../../../shared/service/department.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-department',
@@ -8,12 +9,14 @@ import { DepartmentService } from '../../../shared/service/department.service';
 })
 export class DepartmentComponent implements OnInit {
 
-  constructor(private departmentService:DepartmentService) { }
+  constructor(private _router: Router,
+    private departmentService: DepartmentService) { }
 
   ngOnInit(): void {
-    this.departmentService.fetchAll().subscribe(result => {
-      console.log(result);
-    });
+  }
+
+  newBtnClick() {
+    this._router.navigate(['department','new']);
   }
 
 

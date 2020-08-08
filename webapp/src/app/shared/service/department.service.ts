@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { GridDataResult } from "@progress/kendo-angular-grid";
 import { State } from "@progress/kendo-data-query";
 import { map, tap } from "rxjs/operators";
+import { Department } from "../model/department.model";
 
 @Injectable()
 export class DepartmentService extends BehaviorSubject<GridDataResult> {
@@ -26,6 +27,12 @@ export class DepartmentService extends BehaviorSubject<GridDataResult> {
         let url:string=`${AppSettings.DEPARTMENT_ENDPOINT}/${id}`;
         return this.httpClient.get(url);
     }
+
+    public save(department:Department){
+        return this.httpClient.post(AppSettings.DEPARTMENT_ENDPOINT,department);
+    }
+
+    public 
 
     public query(state: any): void {
         this.fetch(state).subscribe(result => {
