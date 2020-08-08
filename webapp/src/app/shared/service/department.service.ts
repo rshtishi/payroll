@@ -32,7 +32,10 @@ export class DepartmentService extends BehaviorSubject<GridDataResult> {
         return this.httpClient.post(AppSettings.DEPARTMENT_ENDPOINT,department);
     }
 
-    public 
+    public update(department:Department){
+        let url = `${AppSettings.DEPARTMENT_ENDPOINT}/${department.id}`;
+        return this.httpClient.put(url,department);
+    }
 
     public query(state: any): void {
         this.fetch(state).subscribe(result => {

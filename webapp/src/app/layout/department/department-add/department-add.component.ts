@@ -14,7 +14,6 @@ export class DepartmentAddComponent implements OnInit {
 
   public addDepartmentForm: FormGroup;
   submitted = false;
-  department: Department;
 
   constructor(private _formBuilder: FormBuilder,
     private _router: Router,

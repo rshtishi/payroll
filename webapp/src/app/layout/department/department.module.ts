@@ -7,11 +7,12 @@ import { DepartmentBindingDirective } from './directive/department-binding.direc
 import { DepartmentViewComponent } from './department-view/department-view.component';
 import { DepartmentAddComponent } from './department-add/department-add.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DepartmentEditComponent } from './department-edit/department-edit.component';
 
 
 
 @NgModule({
-  declarations: [DepartmentComponent, DepartmentBindingDirective, DepartmentViewComponent, DepartmentAddComponent],
+  declarations: [DepartmentComponent, DepartmentBindingDirective, DepartmentViewComponent, DepartmentAddComponent, DepartmentEditComponent],
   imports: [
     CommonModule,
     DepartmentRoutingModule,

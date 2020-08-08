@@ -27,7 +27,7 @@
                 <kendo-grid-column field="Action">
                     <ng-template kendoGridCellTemplate let-dataItem> 
                         <span class="btn-link" [routerLink]="[dataItem.id,'view']">View | </span>
-                        <span>Edit | </span>
+                        <span class="btn-link" [routerLink]="[dataItem.id,'edit']">Edit | </span>
                         <span>Delete  </span>
                     </ng-template>
                 </kendo-grid-column>

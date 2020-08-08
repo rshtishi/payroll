@@ -1,0 +1,43 @@
+<div class="container">
+    <h1>Department Edit Form</h1>
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <form [formGroup]="editDepartmentForm" (ngSubmit)="submit()">
+                <div class="form-group">
+                    <label class="col-form-label" for="id">Id:</label>
+                    <input class="form-control" type="text" formControlName="id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="name">Name:</label>
+                    <input class="form-control" type="text" formControlName="name" />
+                    <div *ngIf="submitted && inputFieldValue.name.errors">
+                        <div *ngIf="inputFieldValue.name.errors.required">Name is Required</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-light" [disabled]="!editDepartmentForm.valid">
+                            Save
+                        </button>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-dark" (click)="cancel()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-light" (click)="back()">Back</button>
+        </div>
+    </div>
+</div>
