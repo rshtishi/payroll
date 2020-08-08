@@ -3,8 +3,8 @@
     <hr />
     <br />
     <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <kendo-grid departmentBinding [pageSize]="10" [pageable]="{
                 buttonCount: 5,
                 info: true,
@@ -20,14 +20,14 @@
                 <kendo-grid-column field="noOfEmployees"></kendo-grid-column>
                 <kendo-grid-column field="Action">
                     <ng-template kendoGridCellTemplate let-dataItem> 
-                        <span >View | </span>
+                        <span class="btn-link" [routerLink]="[dataItem.id,'view']">View | </span>
                         <span>Edit | </span>
-                        <span>Delete | </span>
+                        <span>Delete  </span>
                     </ng-template>
                 </kendo-grid-column>
             </kendo-grid>
         </div>
-        <div class="col-md-2"></div>
+        <div class="col-md-1"></div>
     </div>
 
 </div>

@@ -22,6 +22,11 @@ export class DepartmentService extends BehaviorSubject<GridDataResult> {
         return this.httpClient.get(AppSettings.DEPARTMENT_ENDPOINT);
     }
 
+    public fetchById(id:string) {
+        let url:string=`${AppSettings.DEPARTMENT_ENDPOINT}/${id}`;
+        return this.httpClient.get(url);
+    }
+
     public query(state: any): void {
         this.fetch(state).subscribe(result => {
             super.next(result);
@@ -37,15 +42,15 @@ export class DepartmentService extends BehaviorSubject<GridDataResult> {
             }${this.getSort(state)}`;
         this._loading = true;
         return this.httpClient.get<any>(url).pipe(
-                map(response => {
-                    this._lastSearchResults = response.totalElements;
-                    return <GridDataResult>{
-                        data: response.content,
-                        total: response.totalElements
-                    };
-                }),
-                tap(() => (this._loading = false))
-            );
+            map(response => {
+                this._lastSearchResults = response.totalElements;
+                return <GridDataResult>{
+                    data: response.content,
+                    total: response.totalElements
+                };
+            }),
+            tap(() => (this._loading = false))
+        );
     }
 
     protected getSort(state: State): string {
