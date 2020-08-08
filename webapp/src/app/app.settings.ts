@@ -14,9 +14,9 @@ export class AppSettings {
 
     public static CURRENT_USER = 'current_user';
 
-    public static DEPARTMENT_ENDPOINT = AppSettings.SERVER_URL + AppSettings.API_ENDPOINT + "/department";
+    public static DEPARTMENT_ENDPOINT = AppSettings.SERVER_URL + AppSettings.API_ENDPOINT + "/department/departments";
 
-    public static EMPLOYEE_ENDPOINT = AppSettings.SERVER_URL + AppSettings.API_ENDPOINT + "/employee";
+    public static EMPLOYEE_ENDPOINT = AppSettings.SERVER_URL + AppSettings.API_ENDPOINT + "/employee/employees";
 
     public static AUTHORIZATION_HEADER_NAME = 'Authorization';
 }

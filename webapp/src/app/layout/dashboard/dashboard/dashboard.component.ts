@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentService } from '../../../shared/service/department.service';
+import 'hammerjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,20 +10,18 @@ import { DepartmentService } from '../../../shared/service/department.service';
 export class DashboardComponent implements OnInit {
 
   public chartTitle: any = { text: 'Payroll Chart' };
-  public chartData: any[] = [{
-    department: "Human Resource",
-    employee_no: 200
-  }, {
-    department: "Development",
-    employee_no: 250
-  }];
+  public chartData: any[] = [];
 
   constructor(private departmentService:DepartmentService) { }
 
   ngOnInit(): void {
     this.departmentService.fetchAll().subscribe(result=>{
-      console.log(result);
+      result['content'].forEach(element => {
+        this.chartData.push({department:element['name'], employee_no:element['noOfEmployees']})
+      });
     });
   }
+
+
 
 }

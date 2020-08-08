@@ -12,8 +12,11 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import 'hammerjs';
 import { AuthorizationInterceptor } from './shared/interceptor/auth-interceptor.service';
+import { DepartmentService } from './shared/service/department.service';
+import { EmployeeService } from './shared/service/employee.service';
+import { GridModule } from '@progress/kendo-angular-grid';
+
 
 
 
@@ -31,9 +34,10 @@ import { AuthorizationInterceptor } from './shared/interceptor/auth-interceptor.
     LayoutModule,
     HttpClientModule,
     ChartsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    GridModule
   ],
-  providers: [AuthService, AuthGuard,
+  providers: [AuthService, AuthGuard, DepartmentService, EmployeeService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
