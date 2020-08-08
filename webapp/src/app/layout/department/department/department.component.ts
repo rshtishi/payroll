@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentService } from '../../../shared/service/department.service';
 import { Router } from '@angular/router';
+import { state } from '@angular/animations';
 
 @Component({
   selector: 'app-department',
@@ -17,6 +18,12 @@ export class DepartmentComponent implements OnInit {
 
   newBtnClick() {
     this._router.navigate(['department','new']);
+  }
+
+  delete(id:string){
+    this.departmentService.delete(id).subscribe(result=>{
+      this.departmentService.query({});
+    });
   }
 
 

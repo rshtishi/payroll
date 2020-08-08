@@ -8,6 +8,7 @@
         </div>
         <div class="col-md-10"></div>
     </div>
+    <br/>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
@@ -28,7 +29,7 @@
                     <ng-template kendoGridCellTemplate let-dataItem> 
                         <span class="btn-link" [routerLink]="[dataItem.id,'view']">View | </span>
                         <span class="btn-link" [routerLink]="[dataItem.id,'edit']">Edit | </span>
-                        <span>Delete  </span>
+                        <span class="btn-link" (click)="delete(dataItem.id)">Delete  </span>
                     </ng-template>
                 </kendo-grid-column>
             </kendo-grid>
