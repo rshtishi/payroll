@@ -10,7 +10,7 @@ import 'hammerjs';
 export class DashboardComponent implements OnInit {
 
   public chartTitle: any = { text: 'Payroll Chart' };
-  public chartData: any[] = [];
+  public chartData: any[] = [{department:'Samplee',employee_no:8}];
 
   constructor(private departmentService:DepartmentService) { }
 

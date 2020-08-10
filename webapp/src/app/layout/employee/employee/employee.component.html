@@ -1,1 +1,42 @@
-<p>employee works!</p>
+<div class="container">
+    <h1>Employee</h1>
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <button type="button" class="btn btn-light">New</button>
+        </div>
+        <div class="col-md-10"></div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <kendo-grid employeeBinding [pageSize]="10" [pageable]="{
+                buttonCount: 5,
+                info: true,
+                type: 'numeric',
+                pageSizes: true,
+                previousNext: true
+              }" [sortable]="{
+                allowUnsort: true,
+                mode: 'single'
+              }">
+                <kendo-grid-column field="id"></kendo-grid-column>
+                <kendo-grid-column field="firstname"></kendo-grid-column>
+                <kendo-grid-column field="lastname"></kendo-grid-column>
+                <kendo-grid-column field="address"></kendo-grid-column>
+                <kendo-grid-column field="phone"></kendo-grid-column>
+                <kendo-grid-column field="Action">
+                    <ng-template kendoGridCellTemplate let-dataItem> 
+                        <span class="btn-link" [routerLink]="[dataItem.id,'view']">View | </span>
+                        <span class="btn-link" [routerLink]="[dataItem.id,'edit']">Edit | </span>
+                        <span class="btn-link">Delete  </span>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+</div>
