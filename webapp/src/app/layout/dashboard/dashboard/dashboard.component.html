@@ -4,8 +4,8 @@
         <div class="col-md-6 col-sm-12">
             <kendo-chart [title]="chartTitle">
                 <kendo-chart-series>
-                    <kendo-chart-series-item type="column" [data]="chartData" field="employee_no" 
-                    categoryField="department">
+                    <kendo-chart-series-item type="column" [data]="departments" field="noOfEmployees"
+                        categoryField="name">
                     </kendo-chart-series-item>
                 </kendo-chart-series>
             </kendo-chart>
