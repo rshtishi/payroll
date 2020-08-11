@@ -13,11 +13,16 @@ export class EmployeeComponent implements OnInit {
     private _employeeService: EmployeeService) { }
 
   ngOnInit(): void {
-    this._employeeService.fetchAll().subscribe(result => console.log(result));
   }
 
   public goToNewEmployeView() {
     this._router.navigate(['employee','new']);
+  }
+
+  public delete(id:string){
+    this._employeeService.delete(id).subscribe(result => {
+      this._employeeService.query({});
+    });
   }
 
 }

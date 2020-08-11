@@ -37,6 +37,11 @@ export class EmployeeService extends BehaviorSubject<GridDataResult> {
         return this.httpClient.put(url,employee);
     }
 
+    public delete(id:string){
+        let url: string = `${AppSettings.EMPLOYEE_ENDPOINT}/${id}`;
+        return this.httpClient.delete(url);
+    }
+
     public query(state: any): void {
         this.fetch(state).subscribe(result => {
             super.next(result);
