@@ -32,6 +32,11 @@ export class EmployeeService extends BehaviorSubject<GridDataResult> {
         return this.httpClient.post(AppSettings.EMPLOYEE_ENDPOINT,employee);
     }
 
+    public update(employee: Employee) {
+        let url: string = `${AppSettings.EMPLOYEE_ENDPOINT}/${employee.id}`;
+        return this.httpClient.put(url,employee);
+    }
+
     public query(state: any): void {
         this.fetch(state).subscribe(result => {
             super.next(result);
