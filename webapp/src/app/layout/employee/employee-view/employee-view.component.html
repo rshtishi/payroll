@@ -1,0 +1,38 @@
+<div class="container">
+    <h1>Employee Detail</h1>
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <table class="table">
+                <caption>
+                    <button type="button" class="btn btn-light" (click)="back()">Back</button>
+                </caption>
+                <tbody>
+                    <tr>
+                        <td>Id:</td>
+                        <td>{{employee?.id}}</td>
+                    </tr>
+                    <tr>
+                        <td>Firstname:</td>
+                        <td>{{employee?.firstname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Lastname:</td>
+                        <td>{{employee?.lastname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address:</td>
+                        <td>{{employee?.address}}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone:</td>
+                        <td>{{employee?.phone}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>

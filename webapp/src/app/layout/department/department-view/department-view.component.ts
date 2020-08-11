@@ -13,7 +13,7 @@ import { Location } from '@angular/common';
 })
 export class DepartmentViewComponent implements OnInit {
 
-  private _$alives = new Subject();
+  private _$alive = new Subject();
   public department:Department;
 
   constructor(
@@ -23,9 +23,9 @@ export class DepartmentViewComponent implements OnInit {
     private _departmentService: DepartmentService) { }
 
   ngOnInit(): void {
-    this._activatedRoute.params.pipe(takeUntil(this._$alives)).subscribe(params => {
+    this._activatedRoute.params.pipe(takeUntil(this._$alive)).subscribe(params => {
       let id = params['id'];
-      this._departmentService.fetchById(id).pipe(takeUntil(this._$alives)).subscribe(result =>{
+      this._departmentService.fetchById(id).pipe(takeUntil(this._$alive)).subscribe(result =>{
         this.department = result;
       });
     });
@@ -36,8 +36,8 @@ export class DepartmentViewComponent implements OnInit {
   }
 
   public ngOnDestroy(): void {
-    this._$alives.next();
-    this._$alives.complete();
+    this._$alive.next();
+    this._$alive.complete();
   }
 
 }
