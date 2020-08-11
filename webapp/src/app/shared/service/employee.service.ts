@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { GridDataResult } from "@progress/kendo-angular-grid";
 import { State } from "@progress/kendo-data-query";
 import { map, tap } from "rxjs/operators";
+import { Employee } from "../model/employee.model";
 
 @Injectable()
 export class EmployeeService extends BehaviorSubject<GridDataResult> {
@@ -14,17 +15,21 @@ export class EmployeeService extends BehaviorSubject<GridDataResult> {
     private _lastGridState: State;
     _currentNavigationState: any;
 
-    constructor(private httpClient:HttpClient){
+    constructor(private httpClient: HttpClient) {
         super(null);
     }
 
-    public fetchAll(){
+    public fetchAll() {
         return this.httpClient.get(AppSettings.EMPLOYEE_ENDPOINT);
     }
 
-    public fetchById(id:string){
-        let url:string=`${AppSettings.EMPLOYEE_ENDPOINT}/${id}`;
+    public fetchById(id: string) {
+        let url: string = `${AppSettings.EMPLOYEE_ENDPOINT}/${id}`;
         return this.httpClient.get(url);
+    }
+
+    public save(employee: Employee) {
+        return this.httpClient.post(AppSettings.EMPLOYEE_ENDPOINT,employee);
     }
 
     public query(state: any): void {

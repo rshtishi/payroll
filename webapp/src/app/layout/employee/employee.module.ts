@@ -7,6 +7,7 @@ import { EmployeeBindingDirective } from './directive/employee-binding.directive
 import { EmployeeViewComponent } from './employee-view/employee-view.component';
 import { EmployeeAddComponent } from './employee-add/employee-add.component';
 import { EmployeeEditComponent } from './employee-edit/employee-edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -15,7 +16,9 @@ import { EmployeeEditComponent } from './employee-edit/employee-edit.component';
   imports: [
     CommonModule,
     EmployeeRoutingModule,
-    GridModule
+    GridModule,
+    ReactiveFormsModule
+
   ]
 })
 export class EmployeeModule { }

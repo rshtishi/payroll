@@ -1,1 +1,71 @@
-<p>employee-add works!</p>
+<div class="container">
+    <h1>Department Add Form</h1>
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <form [formGroup]="addEmployeeForm" (ngSubmit)="submit()">
+                <div class="form-group">
+                    <label class="col-form-label" for="firstname">Firstname:</label>
+                    <input class="form-control" type="text" formControlName="firstname" />
+                    <div *ngIf="submitted && inputFieldValue.firstname.errors">
+                        <div *ngIf="inputFieldValue.firstname.errors.required">Firstame is Required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="lastname">Lastname</label>
+                    <input class="form-control" type="text" formControlName="lastname" />
+                    <div *ngIf="submitted && inputFieldValue.lastname.errors">
+                        <div *ngIf="inputFieldValue.lastname.errors.required">Lastname is Required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="address">Address</label>
+                    <input class="form-control" type="text" formControlName="address" />
+                    <div *ngIf="submitted && inputFieldValue.address.errors">
+                        <div *ngIf="inputFieldValue.address.errors.required">Address is Required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="phone">Phone</label>
+                    <input class="form-control" type="text" formControlName="phone" />
+                    <div *ngIf="submitted && inputFieldValue.phone.errors">
+                        <div *ngIf="inputFieldValue.phone.errors.required">Phone is Required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="department">Department</label>
+                    <select class="form-control" type="text" formControlName="departmentId">
+                        <option *ngFor="let department of departments" value= {{department?.id}}>
+                            {{department?.name}}
+                          </option>
+                    </select>
+                    <div *ngIf="submitted && inputFieldValue.departmentId.errors">
+                        <div *ngIf="inputFieldValue.departmentId.errors.required">Deparment is Required</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-light" [disabled]="!addEmployeeForm.valid">
+                            Save
+                        </button>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-dark" (click)="cancel()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-light" (click)="back()">Back</button>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmployeeService } from '../../../shared/service/employee.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employee',
@@ -8,10 +9,15 @@ import { EmployeeService } from '../../../shared/service/employee.service';
 })
 export class EmployeeComponent implements OnInit {
 
-  constructor(private employeeService:EmployeeService) { }
+  constructor(private _router: Router,
+    private _employeeService: EmployeeService) { }
 
   ngOnInit(): void {
-    this.employeeService.fetchAll().subscribe(result => console.log(result));
+    this._employeeService.fetchAll().subscribe(result => console.log(result));
+  }
+
+  public goToNewEmployeView() {
+    this._router.navigate(['employee','new']);
   }
 
 }
