@@ -1,27 +1,36 @@
-# Test
+# WebApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.4.
+*WebApp* provides the user interface for interacting with the payroll application.
 
-## Development server
+## Business Case
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+*payroll* needs to have a user interface that will allow the user to access the functionalities of the application. The web application that is going to be build need to be:
 
-## Code scaffolding
+- Re-Usable, similar components are greatly encapsulated, or we can say self-sufficient, so we can reuse them on different parts of an app.
+- Readable, we can read the code better and reach productivity faster.
+- Maintainable, the components that are easily decoupled from each other can be easily replaced with better implementation. So it is easier to maintain and update code within the iterative development workflow
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Technology
 
-## Build
+- NodeJs [version:v13.9.0] (the JavaScript runtime environment)
+- NPM [version:6.13.7] (the package manager for the JavaScript programming language)
+- Javascript [version: ES9] (the programming language for building web application)
+- Angular [version:10.0.4] (the platform for building the web application)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Architecture
 
-## Running unit tests
+## Implementation Details
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## Setup
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Prerequisite needed before setup:
 
-## Further help
+- NodeJs [version:v13.9.0] (should be installed)
+- NPM [version:6.13.7] (should be installed)
+- payroll [] (all payroll services should be started and running)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Execute the following command to start *webapp*:
+
+``` npm start``` (to run the web app)
+
