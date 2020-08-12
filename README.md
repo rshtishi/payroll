@@ -9,8 +9,10 @@ A company needs web application for managing employees and the departments in wh
 ## Technology
 
 Payroll is using the following technologies:
-- Spring Boot
-- Spring Data
+- Java(the language used to write the application)
+- Maven(the tool for managing dependencies and building the project)
+- Spring Boot(the framework for creating spring application that just run)
+- Spring Data(the dependency for easier access and manipulation of database)
 - H2 Database(for development environment)
 - Liquibase(for managing the database changes)
 - Lombok(for generating the POJO boilerplate code)
@@ -20,6 +22,11 @@ Payroll is using the following technologies:
 - Spring Cloud OAuth2 (for implementing the authentication and authorization according the OAuth2 standard)
 - Spring Cloud Sleuth (for managing distributed tracing)
 - Spring Cloud Zipkin (for visualizing the tracing of transaction)
+- NodeJs(runtime environment for javascript)
+- Npm( package manager for the JavaScript programming language)
+- Javascript(the language used to write the web application)
+- Typescript(the language used to write the web application)
+- Angular(the platform building web application)
 
 
 ## Architecture
@@ -77,7 +84,11 @@ In this example of microservice architecture, we have used the **OAUTH2** specif
 
 [Department Service](https://github.com/rshtishi/payroll/blob/master/department/README.md)
 
-## ELK 
+### WebApp
+
+*WebApp* is an angular application that provides the user interface for payroll microservice. It provides UI for managing employees, departments. Also, it has a dashboard with a chart displaying the number of employees for each department.
+
+## ELK
 
 We are going to use Elasticsearch, Logstash, Kibana (ELK) to aggregate logs from different services. Elasticsearch is the repository where the logs will be stored from multiple services. All services place all the log files in a central directory. We use logstash to send the logs to elasticsearch. Finally, we use kibana interface for visualization Elasticsearch data and navigating through information.
 
@@ -91,6 +102,8 @@ Prerequisite needed before setup:
 - Redis [version: 2.4.5] should be started and running
 - Kafka [version:] should be started and running
 - Zipkin Server [version: 2.21.1] should be started and running
+- NodeJS [version:v13.9.0] (should be installed)
+- NPM [version:6.13.7] (should be installed)
 
 Build the project:
 
